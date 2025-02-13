@@ -1,35 +1,74 @@
-<h2>Edit <%= resource_name.to_s.humanize %></h2>
-
-<%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
-  <%= f.error_notification %>
-
-  <div class="form-inputs">
-    <%= f.input :email, required: true, autofocus: true %>
-
-    <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
-      <p>Currently waiting confirmation for: <%= resource.unconfirmed_email %></p>
-    <% end %>
-
-    <%= f.input :password,
-                hint: "leave it blank if you don't want to change it",
-                required: false,
-                input_html: { autocomplete: "new-password" } %>
-    <%= f.input :password_confirmation,
-                required: false,
-                input_html: { autocomplete: "new-password" } %>
-    <%= f.input :current_password,
-                hint: "we need your current password to confirm your changes",
-                required: true,
-                input_html: { autocomplete: "current-password" } %>
+<div class="edit-profile-container">
+  <div class="edit-profile-header">
+    <h2>Edit your profile</h2>
+    <p>Update your personal details and preferences.</p>
   </div>
 
-  <div class="form-actions">
-    <%= f.button :submit, "Update" %>
+  <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, class: "edit-profile-form" }) do |f| %>
+    <%= f.error_notification %>
+
+    <!-- ✅ SECTION 1: Infos Générales, Contact Info, Break the Ice -->
+    <div class="form-section form-grid">
+      <div class="form-column">
+        <h3>General information</h3>
+        <div class="form-group">
+          <%= f.input :first_name, required: true, label: "First name", input_html: { class: "form-control", placeholder: "First name" } %>
+          <%= f.input :last_name, required: true, label: "Last name", input_html: { class: "form-control", placeholder: "Last name" } %>
+          <div class="form-avatar">
+            <label><strong>Update your profile picture</strong></label>
+            <%= f.file_field :avatar, class: "form-control-file" %>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-column">
+        <h3>Contact information</h3>
+        <div class="form-group">
+          <%= f.input :email, required: true, label: "Email", input_html: { class: "form-control", autocomplete: "email", placeholder: "Primary email" } %>
+          <%= f.input :secondary_email, required: false, label: "Secondary email", input_html: { class: "form-control", autocomplete: "email", placeholder: "Secondary email (optional)" } %>
+          <%= f.input :phone_number, required: false, label: "Phone number", input_html: { class: "form-control", placeholder: "Phone number (optional)" } %>
+        </div>
+      </div>
+
+      <div class="form-column break-the-ice">
+        <h3>Break the ice</h3>
+        <div class="form-group">
+          <%= f.input :bio, as: :text, required: false, label: "Bio", input_html: { class: "form-control", placeholder: "Tell us about yourself (optional)" } %>
+          <%= f.input :hobbies, as: :text, required: false, label: "Hobbies", input_html: { class: "form-control", placeholder: "Your hobbies (optional)" } %>
+        </div>
+      </div>
+    </div>
+
+    <!-- ✅ SECTION 2: Social Links -->
+    <div class="form-section">
+      <h3>Social links</h3>
+      <div class="social-grid">
+        <div class="form-column">
+          <%= f.input :linkedin, required: false, label: "LinkedIn", input_html: { class: "form-control", placeholder: "LinkedIn profile" } %>
+          <%= f.input :github, required: false, label: "GitHub", input_html: { class: "form-control", placeholder: "GitHub profile" } %>
+        </div>
+        <div class="form-column">
+          <%= f.input :facebook, required: false, label: "Facebook", input_html: { class: "form-control", placeholder: "Facebook profile" } %>
+          <%= f.input :instagram, required: false, label: "Instagram", input_html: { class: "form-control", placeholder: "Instagram profile" } %>
+        </div>
+        <div class="form-column">
+          <%= f.input :twitter, required: false, label: "Twitter", input_html: { class: "form-control", placeholder: "Twitter profile" } %>
+          <%= f.input :tiktok, required: false, label: "TikTok", input_html: { class: "form-control", placeholder: "TikTok profile" } %>
+        </div>
+      </div>
+    </div>
+
+    <!-- ✅ Actions : Update profile et Change password côte à côte -->
+    <div class="form-actions">
+      <%= f.button :submit, "Update profile", class: "btn btn-primary action-btn" %>
+      <%= link_to "Change password", edit_user_password_path, class: "btn btn-yellow action-btn" %>
+    </div>
+  <% end %>
+
+  <!-- ✅ Texte déplacé et espacé correctement -->
+  <p class="delete-account-text">Unhappy? You can delete your account permanently.</p>
+
+  <div class="delete-account">
+    <%= button_to "Delete my account", registration_path(resource_name), data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" }, method: :delete, class: "btn btn-danger action-btn" %>
   </div>
-<% end %>
-
-<h3>Cancel my account</h3>
-
-<div>Unhappy? <%= button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" }, method: :delete %></div>
-
-<%= link_to "Back", :back %>
+</div>

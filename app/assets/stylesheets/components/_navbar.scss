@@ -1,12 +1,145 @@
 .navbar-lewagon {
-  justify-content: space-between;
-  background: white;
-}
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  height: 70px;
+  padding: 0 3%;
+  transition: background 0.3s ease-in-out;
 
-.navbar-lewagon .navbar-collapse {
-  flex-grow: 0;
-}
+  .navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
 
-.navbar-lewagon .navbar-brand img {
-  width: 40px;
+  .navbar-brand-text {
+    font-family: "Audiowide", serif;
+    font-size: 26px;
+    color: #fff;
+  }
+
+  .navbar-center {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    .nav-link {
+      color: #fff;
+      font-size: 16px;
+      font-weight: 500;
+      position: relative;
+      text-decoration: none;
+      transition: color 0.3s ease-in-out;
+
+      &:hover {
+        color: #1899e0;
+      }
+
+      &.active {
+        color: #1899e0;
+      }
+
+      &.active::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60%;
+        height: 2px;
+        background: #1899e0;
+        transition: width 0.3s ease-in-out;
+      }
+    }
+  }
+
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+  }
+
+  .dropdown-menu {
+    background: rgba(255, 255, 255, 0.95);
+    border: none;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .dropdown-item {
+    color: #333;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+      background-color: #f1f1f1;
+      color: #1899e0;
+    }
+  }
+
+  /* ✅ Boutons Login et Signup */
+  .btn-outline-light {
+    border: 2px solid white;
+    color: white;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+      background-color: white;
+      color: #000;
+    }
+  }
+
+  .btn-primary.signup-btn {
+    background-color: #1899e0;
+    border-color: #1899e0;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+      background-color: #157abc;
+      border-color: #157abc;
+    }
+  }
+
+  /* ✅ Hamburger Menu Mobile */
+  .navbar-toggler {
+    border: none;
+    background: transparent;
+  }
+
+  @media (max-width: 768px) {
+    .navbar-toggler {
+      display: block;
+    }
+
+    .collapse.navbar-collapse {
+      display: none;
+      flex-direction: column;
+      align-items: flex-start;
+      background: rgba(0, 0, 0, 0.9);
+      padding: 10px;
+      width: 100%;
+      position: absolute;
+      top: 70px;
+      left: 0;
+      z-index: 999;
+      transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+
+      &.show {
+        display: flex;
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .navbar-center {
+      flex-direction: column;
+      gap: 10px;
+    }
+  }
 }

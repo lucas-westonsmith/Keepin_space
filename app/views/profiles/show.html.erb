@@ -1,0 +1,50 @@
+<div class="profile-container">
+  <!-- ✅ Header du profil -->
+  <div class="profile-header">
+    <div class="profile-avatar">
+      <% if @user.avatar.attached? %>
+        <%= image_tag @user.avatar, class: "avatar-image" %>
+      <% else %>
+        <%= image_tag "default-avatar.png", class: "avatar-image" %>
+      <% end %>
+    </div>
+    <div class="profile-info">
+      <h1><%= @user.first_name %> <%= @user.last_name %></h1>
+      <p class="profile-bio"><%= @user.bio.presence || "No bio available." %></p>
+    </div>
+  </div>
+
+  <!-- ✅ Si c'est notre propre profil -->
+  <% if @own_profile %>
+    <div class="profile-actions">
+      <%= link_to "Edit Profile", edit_user_registration_path, class: "btn btn-primary" %>
+    </div>
+  <% else %>
+    <!-- ✅ Derniers événements en commun -->
+    <div class="profile-common-events">
+      <h2>Events you both attended</h2>
+      <% if @common_events.present? %>
+        <ul>
+          <% @common_events.each do |event| %>
+            <li><%= link_to event.title, event_path(event) %> - <%= event.date.strftime("%B %d, %Y") %></li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p>No shared events.</p>
+      <% end %>
+    </div>
+
+    <!-- ✅ Notes sur l'utilisateur -->
+    <div class="profile-notes">
+      <h2>Your Private Notes</h2>
+      <%= form_with model: @note, url: profile_notes_path(@user), method: :post, local: true do |form| %>
+        <div class="form-group">
+          <%= form.text_area :content, placeholder: "Write a private note about this person...", class: "form-control" %>
+        </div>
+        <div class="form-actions">
+          <%= form.submit "Save Note", class: "btn btn-secondary" %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

@@ -1,0 +1,76 @@
+.features-section {
+  background: #f9fafb; // ✅ Coupure avec le reste du site
+  padding: 4rem 2rem;
+
+  .section-title {
+    text-align: center;
+
+    h2 {
+      margin-bottom: 1.5rem;
+      font-size: 3rem;
+      font-weight: bold;
+      color: #0056D2; // 🔥 Accent bleu électrique pour continuité visuelle
+    }
+
+    p {
+      margin: 0;
+      font-size: 1.25rem;
+      color: #555;
+    }
+  }
+
+  .feature-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    justify-items: center;
+
+    .feature-card {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease-in-out;
+      min-height: 250px;
+      max-width: 300px;
+
+      &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      i {
+        margin-bottom: 1.5rem;
+        display: block;
+        font-size: 2rem;
+        color: #0056D2; // 🔥 Bleu électrique pour cohérence
+      }
+
+      h3 {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        color: #222; // ✅ Texte foncé pour lisibilité
+      }
+
+      p {
+        font-size: 1.1rem;
+        color: #666;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 3rem 1rem;
+
+    .section-title h2 {
+      font-size: 2.5rem;
+    }
+
+    .feature-cards {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+  }
+}

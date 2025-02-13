@@ -1,0 +1,68 @@
+<div class="event-show-container">
+  <div class="event-header">
+    <h1><%= @event.title %></h1>
+    <p class="event-date">
+      <strong>📅 Date:</strong>
+      <% if @event.date.present? %>
+        <%= @event.date.strftime("%B %d, %Y at %I:%M %p") %>
+      <% else %>
+        <em>Date not set</em>
+      <% end %>
+
+      <% if @event.end_date.present? %>
+        - <%= @event.end_date.strftime("%I:%M %p") %>
+      <% end %>
+    </p>
+    <p class="event-location"><strong>📍 Location:</strong> <%= @event.location %></p>
+    <% if @event.sub_location.present? %>
+      <p class="event-sub-location"><strong>🏢 Sub-location:</strong> <%= @event.sub_location %></p>
+    <% end %>
+    <p class="event-description"><%= @event.description %></p>
+  </div>
+
+  <!-- ✅ Boutons d'action (Rejoindre / Quitter) -->
+  <div class="event-actions">
+    <% if user_signed_in? %>
+      <% if @event.invitations.exists?(user_id: current_user.id, status: "accepted") %>
+        <%= link_to "Leave Event", leave_event_path(@event), method: :post, data: { turbo_method: :post }, class: "btn btn-danger" %>
+      <% else %>
+        <%= link_to "Join Event", join_event_path(@event), method: :post, data: { turbo_method: :post }, class: "btn btn-primary" %>
+      <% end %>
+    <% end %>
+  </div>
+
+  <!-- ✅ Invitation des invités -->
+  <% if user_signed_in? && current_user == @event.user %>
+    <div class="event-invite">
+      <h2>Invite Guests</h2>
+      <%= form_with model: [@event, Invitation.new], local: true, html: { class: "invite-form" } do |form| %>
+        <div class="form-group">
+          <%= form.label :email, "Guest Email" %>
+          <%= form.email_field :email, class: "form-control", required: true %>
+        </div>
+        <%= form.submit "Send Invitation", class: "btn btn-primary" %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <!-- ✅ Liste des invités -->
+  <div class="event-guests">
+    <h3>Invited Guests</h3>
+    <ul>
+      <% @event.invitations.each do |invitation| %>
+        <li class="guest-item">
+          <span class="guest-email"><%= invitation.email || invitation.user&.email %></span> -
+          <span class="guest-status"><%= invitation.status&.humanize || "Pending" %></span>
+          <% if current_user == @event.user %>
+            <%= link_to "Remove", event_invitation_path(@event, invitation), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger btn-sm" %>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+
+  <!-- ✅ Retour à la liste des événements -->
+  <div class="event-footer">
+    <%= link_to "Back to Events", events_path, class: "btn btn-secondary" %>
+  </div>
+</div>

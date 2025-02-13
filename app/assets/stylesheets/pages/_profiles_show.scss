@@ -1,0 +1,148 @@
+.profile-container {
+  max-width: 800px;
+  margin: 3rem auto;
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  /* ✅ Header du profil */
+  .profile-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+
+      .avatar-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .profile-info {
+      h1 {
+        font-size: 1.75rem;
+        margin-bottom: 0.5rem;
+        color: #0056D2;
+      }
+
+      .profile-bio {
+        font-size: 1rem;
+        color: #666;
+      }
+    }
+  }
+
+  /* ✅ Actions (bouton Edit) */
+  .profile-actions {
+    text-align: center;
+    margin-top: 1rem;
+
+    .btn-primary {
+      background-color: #0056D2;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: bold;
+      transition: all 0.3s ease-in-out;
+      display: inline-block;
+
+      &:hover {
+        background-color: #0041A3;
+        transform: translateY(-2px);
+      }
+    }
+  }
+
+  /* ✅ Section des événements en commun */
+  .profile-common-events {
+    margin-top: 2rem;
+
+    h2 {
+      font-size: 1.5rem;
+      color: #0056D2;
+      margin-bottom: 1rem;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+
+      li {
+        background: #F9F9F9;
+        padding: 0.75rem;
+        border-radius: 6px;
+        margin-bottom: 0.5rem;
+
+        a {
+          text-decoration: none;
+          font-weight: bold;
+          color: #0056D2;
+
+          &:hover {
+            color: #FFC107;
+          }
+        }
+      }
+    }
+  }
+
+  /* ✅ Section des notes */
+  .profile-notes {
+    margin-top: 2rem;
+
+    h2 {
+      font-size: 1.5rem;
+      color: #0056D2;
+      margin-bottom: 1rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+
+      .form-control {
+        padding: 0.75rem;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.2s ease-in-out;
+
+        &:focus {
+          border-color: #0056D2;
+          box-shadow: 0 0 5px rgba(0, 86, 210, 0.3);
+          outline: none;
+        }
+      }
+    }
+
+    .form-actions {
+      text-align: right;
+      margin-top: 1rem;
+
+      .btn-secondary {
+        background-color: #007AFF;
+        color: white;
+        padding: 0.6rem 1.2rem;
+        border-radius: 8px;
+        font-weight: bold;
+        transition: all 0.3s ease-in-out;
+        border: none;
+        cursor: pointer;
+
+        &:hover {
+          background-color: #0056D2;
+          transform: translateY(-2px);
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,111 @@
+.faq-section {
+  background: linear-gradient(180deg, #0056D2 0%, #C2D7F7 100%);
+  padding: 5rem 2rem;
+  text-align: center;
+
+  .section-title {
+    margin-bottom: 2rem;
+
+    h2 {
+      font-size: 3rem;
+      font-weight: bold;
+      color: white; // ✅ Titre bien visible
+    }
+  }
+
+  .faq-container {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: left;
+  }
+
+  .faq-item {
+    margin-bottom: 1rem;
+  }
+
+  .faq-question {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 1rem;
+    border-radius: 8px;
+    background: #ffffff;
+    transition: background 0.3s ease-in-out, transform 0.2s;
+
+    &:hover {
+      background: #F0F5FF;
+      transform: translateY(-2px);
+    }
+  }
+
+  .faq-icon {
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .faq-answer {
+    display: none;
+    padding: 1rem;
+    font-size: 1.2rem;
+    color: #333;
+    border-radius: 5px;
+    background: #f4f4f4;
+    transition: max-height 0.3s ease-out;
+  }
+
+  .faq-divider {
+    border: none;
+    border-top: 2px solid #ddd;
+    margin: 1rem 0;
+  }
+
+  /* ✅ Animation ouverture/fermeture */
+  .faq-answer.open {
+    display: block;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-5px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .faq-signup {
+    margin-top: 3rem;
+
+    .cta-button {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      font-size: 1.25rem;
+      font-weight: bold;
+      border-radius: 0.5rem;
+      text-decoration: none;
+      transition: all 0.2s ease-in-out;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+      background-color: #FFD700;
+      color: #0056D2;
+      border: none;
+
+      &:hover {
+        background-color: darken(#FFD700, 10%);
+        text-decoration: none;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .faq-question {
+      font-size: 1.25rem;
+    }
+  }
+}

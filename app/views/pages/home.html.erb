@@ -1,2 +1,306 @@
-<h1>Pages#home</h1>
-<p>Find me in app/views/pages/home.html.erb</p>
+<div class="hero" data-controller="hero">
+  <div class="hero-content container my-5">
+    <h1 class="animate-text">
+      <strong>Your Events, <span class="text-gradient">Organized with Energy</span></strong>
+    </h1>
+    <h2 class="animate-text">
+      Plan, invite, and manage your events seamlessly. KeepinSpace makes event planning fast, smart, and stress-free.
+    </h2>
+
+    <div class="hero-buttons">
+      <a href="<%= user_signed_in? ? events_path : new_user_registration_path %>" class="btn btn-primary shiny-cta animate-button">
+        <span>Get Started</span>
+      </a>
+      <a href="#features" class="btn btn-secondary shiny-cta animate-button">
+        Learn More
+      </a>
+    </div>
+
+    <div class="check-homepage">
+      <div class="check-item animate-text">
+        <i class="fa-solid fa-circle-check fa-lg"></i> Smart Event Planning
+      </div>
+      <div class="check-item animate-text">
+        <i class="fa-solid fa-circle-check fa-lg"></i> Instant Invitations
+      </div>
+      <div class="check-item animate-text">
+        <i class="fa-solid fa-circle-check fa-lg"></i> Historical Insights
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="painpoints" class="painpoints-section">
+  <div class="container">
+    <h2 class="text-gradient angry-underline-white">Before KeepinSpace...</h2>
+    <div class="painpoints-grid">
+      <!-- Column 1 -->
+      <div class="painpoints-column">
+        <p>Invitations scattered?<span>Lost.</span></p>
+        <p>Multiple group chats?<span>Messy.</span></p>
+        <p>Who's coming?<span>Unclear.</span></p>
+      </div>
+
+      <!-- Column 2 -->
+      <div class="painpoints-column">
+        <p>Forgot an event?<span>Missed.</span></p>
+        <p>Old event details?<span>Nowhere.</span></p>
+        <p>Agenda syncing?<span>Complicated.</span></p>
+      </div>
+
+      <!-- Column 3 -->
+      <div class="painpoints-column">
+        <p>Who attended before?<span>Forgotten.</span></p>
+        <p>Breaking the ice?<span>Awkward.</span></p>
+        <p>Follow-ups?<span>Nonexistent.</span></p>
+      </div>
+
+      <!-- Column 4 -->
+      <div class="painpoints-column">
+        <p>Event planning?<span>Time-consuming.</span></p>
+        <p>Contact management?<span>Scattered.</span></p>
+        <p>Event notes?<span>Disorganized.</span></p>
+      </div>
+    </div>
+
+    <p class="painpoints-subtext">
+      But it doesn’t have to be this way.
+      <br><strong>All your events, contacts, and invitations in one place.</strong> Simple, smart, connected.
+    </p>
+  </div>
+</div>
+
+<div id="features" class="features-section" data-controller="features">
+  <div class="section-title container my-5">
+    <h2><span class="angry-underline-blue">Key Features</span></h2>
+    <p>Discover how KeepinSpace revolutionizes event management</p>
+  </div>
+
+  <div class="feature-cards container my-5">
+    <div class="feature-card">
+      <i class="fa-solid fa-calendar-check fa-2xl"></i>
+      <h3>Seamless Event Creation</h3>
+      <p>Plan and manage your events effortlessly in one place.</p>
+    </div>
+
+    <div class="feature-card">
+      <i class="fa-solid fa-envelope-open-text fa-2xl"></i>
+      <h3>Smart Invitations</h3>
+      <p>Send event invites via email, SMS, or social media, hassle-free.</p>
+    </div>
+
+    <div class="feature-card">
+      <i class="fa-solid fa-users fa-2xl"></i>
+      <h3>Guest Management</h3>
+      <p>Track RSVPs, follow up, and see shared event history.</p>
+    </div>
+
+    <div class="feature-card">
+      <i class="fa-solid fa-bell fa-2xl"></i>
+      <h3>Real-Time Notifications</h3>
+      <p>Get instant updates when guests respond or interact.</p>
+    </div>
+
+    <div class="feature-card">
+      <i class="fa-solid fa-calendar-day fa-2xl"></i>
+      <h3>Calendar Sync</h3>
+      <p>Automatically add events to your favorite calendar apps.</p>
+    </div>
+
+    <div class="feature-card">
+      <i class="fa-solid fa-comments fa-2xl"></i>
+      <h3>Integrated Messaging</h3>
+      <p>Chat with guests directly within the platform.</p>
+    </div>
+
+    <div class="feature-card">
+      <i class="fa-solid fa-file-signature fa-2xl"></i>
+      <h3>Event Notes</h3>
+      <p>Take private notes on attendees for networking and future events.</p>
+    </div>
+
+    <div class="feature-card">
+      <i class="fa-solid fa-history fa-2xl"></i>
+      <h3>Event History</h3>
+      <p>See past events and shared experiences with guests.</p>
+    </div>
+  </div>
+</div>
+
+<div id="how-it-works" class="how-it-works-section" data-controller="howitworks">
+  <div class="section-title container my-5">
+    <h2><span class="angry-underline-blue">How It Works</span></h2>
+  </div>
+  <div class="steps container my-5">
+    <div class="step">
+      <h3>Step 1</h3>
+      <h4>Create an Event</h4>
+      <p>Set up your event with details, date, and location in seconds.</p>
+    </div>
+    <div class="step">
+      <h3>Step 2</h3>
+      <h4>Invite Guests</h4>
+      <p>Send invitations via email, SMS, or social media, and track RSVPs.</p>
+    </div>
+    <div class="step">
+      <h3>Step 3</h3>
+      <h4>Engage & Enjoy</h4>
+      <p>Get real-time updates, chat with attendees, and keep memories.</p>
+    </div>
+  </div>
+</div>
+
+<div id="value" class="value-section" data-controller="value">
+  <div class="section-title">
+    <h2>The value of <span class="angry-underline-blue" style="color: #0056D2;">KeepinSpace</span></h2>
+  </div>
+
+  <!-- Titles for Columns -->
+  <div class="titles container my-5">
+    <div class="title-container">
+      <h2>What you'll get</h2>
+    </div>
+    <div class="title-container-right">
+      <h2>How to use it</h2>
+    </div>
+  </div>
+
+  <!-- Cards Section -->
+  <div class="cards container my-5">
+    <div class="item-explanation">
+      <!-- Row 1 -->
+      <div class="card-row">
+        <div class="item-left">
+          <i class="fa-solid fa-calendar-check fa-2xl" style="color:#FFD700;"></i>
+          <p>Effortless event planning and management.</p>
+        </div>
+        <div class="arrow">
+          <i class="fa-solid fa-circle-arrow-right fa-2xl" style="color:#FF6F61;"></i>
+        </div>
+        <div class="item">
+          <i class="fa-solid fa-plus fa-2xl" style="color:#007AFF;"></i>
+          <p>Create an event in just a few clicks and invite guests instantly.</p>
+        </div>
+      </div>
+      <hr class="card-divider">
+
+      <!-- Row 2 -->
+      <div class="card-row">
+        <div class="item-left">
+          <i class="fa-solid fa-envelope-open-text fa-2xl" style="color:#FFD700;"></i>
+          <p>Seamless invitation system across multiple platforms.</p>
+        </div>
+        <div class="arrow">
+          <i class="fa-solid fa-circle-arrow-right fa-2xl" style="color:#FF6F61;"></i>
+        </div>
+        <div class="item">
+          <i class="fa-solid fa-share-nodes fa-2xl" style="color:#007AFF;"></i>
+          <p>Send invites via email, SMS, or social media effortlessly.</p>
+        </div>
+      </div>
+      <hr class="card-divider">
+
+      <!-- Row 3 -->
+      <div class="card-row">
+        <div class="item-left">
+          <i class="fa-solid fa-clock fa-2xl" style="color:#FFD700;"></i>
+          <p>Real-time RSVP tracking and guest management.</p>
+        </div>
+        <div class="arrow">
+          <i class="fa-solid fa-circle-arrow-right fa-2xl" style="color:#FF6F61;"></i>
+        </div>
+        <div class="item">
+          <i class="fa-solid fa-users fa-2xl" style="color:#007AFF;"></i>
+          <p>Monitor responses and manage your guest list with ease.</p>
+        </div>
+      </div>
+      <hr class="card-divider">
+
+      <!-- Row 4 -->
+      <div class="card-row">
+        <div class="item-left">
+          <i class="fa-solid fa-comments fa-2xl" style="color:#FFD700;"></i>
+          <p>Integrated chat for seamless event communication.</p>
+        </div>
+        <div class="arrow">
+          <i class="fa-solid fa-circle-arrow-right fa-2xl" style="color:#FF6F61;"></i>
+        </div>
+        <div class="item">
+          <i class="fa-solid fa-message fa-2xl" style="color:#007AFF;"></i>
+          <p>Keep attendees engaged with in-app messaging and updates.</p>
+        </div>
+      </div>
+      <hr class="card-divider">
+
+      <!-- Row 5 -->
+      <div class="card-row">
+        <div class="item-left">
+          <i class="fa-solid fa-history fa-2xl" style="color:#FFD700;"></i>
+          <p>Full event history and shared experiences.</p>
+        </div>
+        <div class="arrow">
+          <i class="fa-solid fa-circle-arrow-right fa-2xl" style="color:#FF6F61;"></i>
+        </div>
+        <div class="item">
+          <i class="fa-solid fa-book fa-2xl" style="color:#007AFF;"></i>
+          <p>Look back at past events and shared memories with guests.</p>
+        </div>
+      </div>
+      <hr class="card-divider">
+    </div>
+  </div>
+</div>
+
+<div id="faq" class="faq-section" data-controller="faq">
+  <div class="section-title">
+    <h2>Frequently Asked Questions</h2>
+  </div>
+
+  <div class="faq-container">
+    <% faqs = [
+      { question: "How do I create an event?",
+        answer: "You can create an event in just a few clicks by selecting a date, time, and guest list. Invitations will be sent automatically through the preferred channel of your guests." },
+
+      { question: "Can I invite people who are not on the platform?",
+        answer: "Yes! You can invite guests via email, phone number, or social media, even if they are not registered on KeepinSpace. They will receive an invitation with a simple way to respond." },
+
+      { question: "How does the event history feature work?",
+        answer: "KeepinSpace automatically tracks your past events and shows shared history with other attendees. This makes networking and small talk easier at future events." },
+
+      { question: "Is my data private?",
+        answer: "Absolutely! Your event history, personal notes, and guest interactions are private. Only you can see your own notes on other users." },
+
+      { question: "Can I take notes on other guests?",
+        answer: "Yes, KeepinSpace allows you to add private notes on guests you meet at events. These notes are completely confidential and help you remember key details about each person." },
+
+      { question: "How does event integration with calendars work?",
+        answer: "Guests can easily add the event to their Google, Apple, or Outlook calendar with one click from their invitation." },
+
+      { question: "Can I chat with my guests?",
+        answer: "Yes! KeepinSpace provides an in-app chat feature for each event so guests can discuss logistics, carpooling, or any other details." },
+
+      { question: "How do I know who has RSVP’d?",
+        answer: "You can track guest responses in real-time on your event dashboard. Attendees can update their status at any time." },
+
+      { question: "Is KeepinSpace free?",
+        answer: "We offer a free version with essential features. A premium version with advanced features is available for event organizers and businesses." }
+    ] %>
+
+    <% faqs.each_with_index do |faq, index| %>
+      <div class="faq-item">
+        <div class="faq-question" data-action="click->faq#toggle" data-index="<%= index %>">
+          <span><%= faq[:question] %></span>
+          <i class="fa-solid fa-plus faq-icon" data-faq-target="icon"></i>
+        </div>
+        <div class="faq-answer" data-faq-target="answer">
+          <p><%= faq[:answer] %></p>
+        </div>
+        <hr class="faq-divider">
+      </div>
+    <% end %>
+  </div>
+
+  <div class="faq-signup">
+    <a href="<%= user_signed_in? ? events_path : new_user_registration_path %>" class="cta-button cta-faq">Try KeepinSpace Today</a>
+  </div>
+</div>

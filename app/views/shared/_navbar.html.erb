@@ -1,38 +1,49 @@
-<div class="navbar navbar-expand-sm navbar-light navbar-lewagon">
-  <div class="container-fluid">
-    <%= link_to "#", class: "navbar-brand" do %>
-      <%= image_tag "https://raw.githubusercontent.com/lewagon/fullstack-images/master/uikit/logo.png" %>
+<div class="navbar navbar-expand-lg navbar-lewagon">
+  <div class="container-fluid navbar-container">
+    <!-- Logo -->
+    <%= link_to root_path, class: "navbar-brand" do %>
+      <div class="navbar-brand-text">KeepinSpace</div>
     <% end %>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <!-- Hamburger Button (Mobile) -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu" aria-controls="navbarMenu" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto">
-        <% if user_signed_in? %>
-          <li class="nav-item active">
-            <%= link_to "Home", "#", class: "nav-link" %>
-          </li>
-          <li class="nav-item">
-            <%= link_to "Messages", "#", class: "nav-link" %>
-          </li>
-          <li class="nav-item dropdown">
-          <a href="#" class="avatar" id="navbarDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <%= image_tag "https://kitt.lewagon.com/placeholder/users/ssaunier", class: "avatar", alt: "dropdown menu" %>
-          </a>
-            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-              <%= link_to "Action", "#", class: "dropdown-item" %>
-              <%= link_to "Another action", "#", class: "dropdown-item" %>
-              <%= link_to "Log out", destroy_user_session_path, data: {turbo_method: :delete}, class: "dropdown-item" %>
-            </div>
-          </li>
-        <% else %>
-          <li class="nav-item">
-            <%= link_to "Login", new_user_session_path, class: "nav-link" %>
-          </li>
-        <% end %>
-      </ul>
+    <!-- Central Navigation Menu -->
+    <div class="collapse navbar-collapse justify-content-center" id="navbarMenu">
+      <% if user_signed_in? %>
+        <div class="navbar-center">
+          <%= link_to "Home", root_path, class: "nav-link #{'active' if current_page?(root_path)}" %>
+          <%= link_to "Events", events_path, class: "nav-link #{'active' if current_page?(events_path)}" %>
+          <%= link_to "Notifications (#{current_user.notifications.unread.count})", notifications_path, class: "nav-link #{'active' if current_page?(notifications_path)}" %>
+          <%= link_to "Messages", messages_path, class: "nav-link #{'active' if current_page?(messages_path)}" %>
+        </div>
+      <% else %>
+        <div class="navbar-center">
+          <%= link_to "Discover", discover_path, class: "nav-link #{'active' if current_page?(discover_path)}" %>
+          <%= link_to "Pricing", pricing_path, class: "nav-link #{'active' if current_page?(pricing_path)}" %>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Right Section (User Dropdown) -->
+    <div class="d-flex align-items-center ms-auto">
+      <% if user_signed_in? %>
+        <% avatar_url = current_user.avatar.attached? ? url_for(current_user.avatar) : asset_path("default-avatar.png") %>
+        <div class="dropdown">
+          <%= image_tag avatar_url, class: "avatar dropdown-toggle", id: "avatarDropdown", data: { "bs-toggle" => "dropdown" }, alt: "User avatar" %>
+          <div class="dropdown-menu dropdown-menu-end" aria-labelledby="avatarDropdown">
+            <%= link_to "Profile", profile_path(current_user), class: "dropdown-item" %>
+            <%= link_to "Settings", settings_path, class: "dropdown-item" %>
+            <div class="dropdown-divider"></div>
+            <%= link_to "Log out", destroy_user_session_path, class: "dropdown-item text-danger", data: { turbo_method: :delete } %>
+          </div>
+        </div>
+      <% else %>
+        <%= link_to "Login", new_user_session_path, class: "btn btn-outline-light login-btn" %>
+        <%= link_to "Sign up", new_user_registration_path, class: "btn btn-primary ms-2 signup-btn" %>
+      <% end %>
     </div>
   </div>
 </div>

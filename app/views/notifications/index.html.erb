@@ -1,0 +1,14 @@
+<h1>Vos Notifications</h1>
+
+<ul id="notifications">
+  <% @notifications.each do |notification| %>
+    <li>
+      <%= notification.message %>
+      <% unless notification.read_at %>
+        <%= link_to "Marquer comme lu", notification_path(notification), method: :patch, class: "btn btn-success btn-sm" %>
+      <% end %>
+    </li>
+  <% end %>
+</ul>
+
+<%= link_to "Retour aux événements", events_path, class: "btn btn-secondary" %>

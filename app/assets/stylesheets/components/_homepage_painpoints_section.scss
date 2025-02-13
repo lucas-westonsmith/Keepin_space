@@ -1,0 +1,80 @@
+.painpoints-section {
+  background: linear-gradient(180deg, #0056D2 0%, #007AFF 100%);
+  padding: 4rem 0;
+  text-align: center;
+
+  .container {
+    max-width: 85vw;
+    margin: 0 auto;
+  }
+
+  h2 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 2rem;
+  }
+
+  .painpoints-grid {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    gap: 2.5rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+
+    .painpoints-column {
+      flex: 1;
+      max-width: 300px;
+      min-width: 240px;
+      padding: 0.5rem;
+
+      p {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: white;
+        margin-bottom: 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        span {
+          color: #FFC107; // 🔥 Jaune-orangé pour du contraste et du punch
+          font-weight: bold;
+          font-size: 1.5rem;
+          display: block;
+        }
+      }
+    }
+  }
+
+  .painpoints-subtext {
+    max-width: 800px;
+    margin: 2rem auto 0;
+    font-size: 1.4rem;
+    color: white;
+    font-weight: normal;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 1100px) {
+    .container {
+      max-width: 90vw;
+    }
+
+    .painpoints-grid {
+      gap: 2rem;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .painpoints-grid {
+      flex-direction: column;
+      align-items: center;
+
+      .painpoints-column {
+        max-width: 100%;
+      }
+    }
+  }
+}

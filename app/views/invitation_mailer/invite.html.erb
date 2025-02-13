@@ -1,0 +1,17 @@
+<h1>You're Invited to <%= @event.title %>!</h1>
+<p>Hello,</p>
+
+<p>You have been invited to <strong><%= @event.title %></strong>.</p>
+
+<p><strong>Date:</strong> <%= @event.date.strftime("%B %d, %Y at %I:%M %p") %></p>
+<p><strong>Location:</strong> <%= @event.location %></p>
+<p><strong>Description:</strong> <%= @event.description %></p>
+
+<p>Click below to respond:</p>
+<p>
+  <%= link_to "Accept", respond_event_invitation_url(@event, @invitation, status: "accepted"), class: "btn btn-success" %> |
+  <%= link_to "Decline", respond_event_invitation_url(@event, @invitation, status: "declined"), class: "btn btn-danger" %> |
+  <%= link_to "Maybe", respond_event_invitation_url(@event, @invitation, status: "maybe"), class: "btn btn-warning" %>
+</p>
+
+<p>See you there!</p>

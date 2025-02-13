@@ -1,0 +1,130 @@
+.value-section {
+  background: #f9fafb;
+  padding: 5rem 2rem;
+
+  .section-title {
+    text-align: center;
+
+    h2 {
+      margin-bottom: 3rem;
+      font-size: 3rem;
+      font-weight: bold;
+      color: #0056D2; // 🔥 Accent bleu intense pour continuité
+
+      span {
+        color: #FFD700; // 🔥 Jaune-orangé pour punch visuel
+      }
+    }
+  }
+
+  .titles {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+
+    .title-container,
+    .title-container-right {
+      width: 45%;
+      text-align: center;
+      border-radius: 5px;
+      padding: 1.5rem;
+
+      &.title-container {
+        background: linear-gradient(to right, #e3e8fe, #f9fafb);
+      }
+
+      &.title-container-right {
+        background: linear-gradient(to right, #feeefd, #fef8e3);
+      }
+
+      h2 {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #333;
+        margin: 0;
+      }
+    }
+  }
+
+  .cards {
+    .item-explanation {
+      .card-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1.5rem;
+
+        .item-left,
+        .item {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          width: 45%;
+
+          i {
+            font-size: 2rem;
+            width: 2.5rem;
+            height: 2.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+
+          p {
+            font-size: 1.5rem;
+            color: #333;
+            margin: 0;
+          }
+        }
+
+        .arrow {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          i {
+            font-size: 2rem;
+            color: #FF6F61; // 🔥 Rouge orangé pour accentuer le flow
+          }
+        }
+      }
+
+      .card-divider {
+        border: none;
+        border-top: 3px solid #a9a9a9;
+        margin: 1.2rem 0;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .titles {
+      flex-direction: column;
+      align-items: center;
+
+      .title-container,
+      .title-container-right {
+        width: 100%;
+        margin-bottom: 1rem;
+      }
+    }
+
+    .cards {
+      .item-explanation {
+        .card-row {
+          flex-direction: column;
+          align-items: flex-start;
+
+          .item-left,
+          .item {
+            width: 100%;
+          }
+
+          .arrow {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+}

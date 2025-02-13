@@ -1,0 +1,106 @@
+.hero {
+  background: linear-gradient(180deg, rgb(194, 215, 247) 0%, #0056D2 100%);
+  color: white;
+  text-align: center;
+  padding: 6rem 2rem;
+
+  h1 {
+    margin-bottom: 2rem;
+    font-size: 4rem;
+    font-weight: bold;
+
+    .text-gradient {
+      background: linear-gradient(90deg, #FFD700 0%, #FF6F61 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+
+  h2 {
+    font-size: 1.75rem;
+    margin-bottom: 3rem;
+    color: #f5f5f5;
+  }
+
+  .hero-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin: 3rem 0;
+
+    .btn {
+      padding: 0.8rem 2rem;
+      border-radius: 0.5rem;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.25rem;
+      transition: all 0.2s ease-in-out;
+
+      &.btn-primary {
+        background-color: #0056D2;
+        color: white;
+        box-shadow: 0 4px 8px rgba(0, 86, 210, 0.4);
+        border: none;
+
+        &:hover {
+          background-color: lighten(#0056D2, 10%);
+          box-shadow: 0 6px 12px rgba(0, 86, 210, 0.5);
+          transform: translateY(-2px);
+        }
+      }
+
+      &.btn-secondary {
+        background-color: transparent;
+        color: white;
+        border: 2px solid white;
+        transition: all 0.2s ease-in-out;
+
+        &:hover {
+          background-color: white;
+          color: #007AFF;
+          transform: translateY(-2px);
+        }
+      }
+    }
+  }
+
+  .check-homepage {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2rem;
+
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.25rem;
+      color: white;
+
+      i {
+        color: #FFC107;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 4rem 1rem;
+
+    h1 {
+      font-size: 2.5rem;
+    }
+
+    h2 {
+      font-size: 1.25rem;
+    }
+
+    .hero-buttons {
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .check-homepage {
+      flex-direction: column;
+    }
+  }
+}

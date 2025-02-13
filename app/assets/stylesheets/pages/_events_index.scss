@@ -1,0 +1,160 @@
+.events-index {
+  padding: 3rem 2rem; /* 🔥 Réduction légère du padding global */
+  max-width: 1200px;
+  margin: 0 auto;
+
+  /* ✅ Header */
+  .events-header {
+    text-align: center;
+    background: linear-gradient(180deg, #0056D2 0%, #007AFF 100%);
+    color: white;
+    padding: 1.7rem; /* 🔥 Réduction du padding haut/bas */
+    border-radius: 12px;
+    margin-bottom: 2rem;
+
+    h1 {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 0.8rem; /* 🔥 Réduction de l’espace sous le titre */
+    }
+
+    .btn-primary {
+      background-color: #FFD700;
+      color: #000;
+      font-weight: bold;
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      transition: all 0.3s ease-in-out;
+
+      &:hover {
+        background-color: #FFC107;
+        transform: translateY(-2px);
+      }
+    }
+  }
+
+  /* ✅ Month Separator */
+  .month-divider {
+    margin: 1.8rem 0 1rem; /* 🔥 Réduction légère */
+    text-align: left;
+    padding-left: 1rem;
+    border-left: 5px solid #FFC107;
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #0056D2;
+      margin: 0;
+    }
+  }
+
+  /* ✅ Events List */
+  .events-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem; /* 🔥 Réduction de l’espace entre les events */
+  }
+
+  /* ✅ Event Card */
+  .event-card {
+    display: flex;
+    background: #fff;
+    padding: 1.2rem; /* 🔥 Réduction du padding interne */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer; /* ✅ Rendre toute la card cliquable */
+    text-decoration: none; /* 🔥 Supprime le soulignement globalement */
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    /* ✅ Info Section */
+    .event-info {
+      flex: 1;
+      cursor: pointer;
+
+      h3 {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 0.3rem; /* 🔥 Réduction de l’espace sous le titre */
+
+        a {
+          text-decoration: none !important; /* 🔥 Supprime le soulignement des liens */
+          color: #0056D2;
+
+          &:hover {
+            color: #FFC107;
+          }
+        }
+      }
+
+      .event-organizer {
+        font-size: 1rem;
+        color: #555;
+        margin-bottom: 0.3rem; /* 🔥 Réduction subtile de l’espace */
+      }
+
+      .event-date-location {
+        font-size: 1rem;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 0.3rem; /* 🔥 Compactage léger */
+      }
+
+      .event-stats {
+        font-size: 1rem;
+        color: #007AFF;
+        font-weight: bold;
+        margin-bottom: 0.3rem; /* 🔥 Compactage */
+      }
+
+      .event-description {
+        font-size: 1rem;
+        color: #666;
+        margin-bottom: 0.3rem; /* 🔥 Compactage léger */
+      }
+    }
+
+    /* ✅ Button Section */
+    .event-actions {
+      .btn-secondary {
+        background-color: #0056D2;
+        color: white;
+        padding: 0.6rem 1.2rem;
+        border-radius: 8px;
+        transition: all 0.3s ease-in-out;
+        text-decoration: none; /* 🔥 Supprime tout soulignement des boutons */
+
+        &:hover {
+          background-color: #003F91;
+          transform: translateY(-3px);
+        }
+      }
+    }
+  }
+
+  /* ✅ Responsive */
+  @media (max-width: 768px) {
+    .events-header {
+      padding: 1.5rem;
+      h1 {
+        font-size: 1.5rem;
+      }
+    }
+
+    .event-card {
+      flex-direction: column;
+      text-align: center;
+      padding: 1rem;
+
+      .event-actions {
+        margin-top: 0.8rem;
+      }
+    }
+  }
+}

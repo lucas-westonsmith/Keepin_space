@@ -1,0 +1,43 @@
+<%= form_with(model: @event, local: true, html: { class: "event-form" }) do |form| %>
+  <div class="form-group">
+    <%= form.label :title, "Event Title" %>
+    <%= form.text_field :title, class: "form-control", required: true %>
+  </div>
+
+  <!-- 📅 Début et Fin de l'événement -->
+  <div class="form-group">
+    <%= form.label :date, "Start Date & Time" %>
+    <%= form.datetime_local_field :date, class: "form-control", required: true %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :end_date, "End Date & Time" %>
+    <%= form.datetime_local_field :end_date, class: "form-control", required: true %>
+  </div>
+
+  <!-- 📍 Lieu avec Google Maps Autocomplete -->
+  <div class="form-group" data-controller="location-autocomplete" data-location-autocomplete-api-key-value="<%= ENV['GOOGLE_MAPS_API_KEY'] %>">
+    <%= form.label :location, "Location" %>
+    <%= form.text_field :location, class: "form-control", id: "autocomplete-location", data: { location_autocomplete_target: "input" }, placeholder: "Enter a location...", required: true %>
+  </div>
+
+  <!-- 📍 Sous-lieu -->
+  <div class="form-group">
+    <%= form.label :sub_location, "Sub-location (Optional)" %>
+    <%= form.text_field :sub_location, class: "form-control", placeholder: "E.g., Room 305" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :description, "Description" %>
+    <%= form.text_area :description, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :visibility, "Visibility" %>
+    <%= form.select :visibility, Event.visibilities.keys.map { |v| [v.humanize, v] }, {}, class: "form-control" %>
+  </div>
+
+  <div class="form-actions">
+    <%= form.submit "Save Event", class: "btn btn-primary" %>
+  </div>
+<% end %>

@@ -1,0 +1,35 @@
+<div class="events-index">
+  <div class="events-header">
+    <h1>Upcoming Events</h1>
+    <% if user_signed_in? %>
+      <%= link_to "Create an Event", new_event_path, class: "btn btn-primary" %>
+    <% end %>
+  </div>
+
+  <% @events.group_by { |event| event.date.strftime("%B %Y") }.each do |month, events| %>
+    <div class="month-divider">
+      <h2><%= month %></h2>
+    </div>
+
+    <div class="events-list">
+      <% events.each do |event| %>
+        <%= link_to event_path(event), class: "event-card" do %>
+          <div class="event-info">
+            <h3><%= event.title %></h3>
+            <p class="event-organizer">Organized by: <strong><%= event.organizer_name %></strong></p>
+            <p class="event-date-location">
+              📅 <%= event.date.strftime("%A, %B %d, %Y at %I:%M %p") %>
+              &nbsp;|&nbsp; 📍 <%= event.location %>
+            </p>
+            <p class="event-stats">
+              👥 <%= event.attendees_count %> Attending
+              &nbsp;|&nbsp; 🤝 <%= event.contacts_attending_count(current_user) %> Your contacts attending
+              &nbsp;|&nbsp; 🔄 <%= event.people_you_ever_met_count(current_user) %> People you ever met
+            </p>
+            <p class="event-description"><%= truncate(event.description, length: 150) %></p>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+</div>
