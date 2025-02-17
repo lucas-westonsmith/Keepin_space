@@ -5,7 +5,7 @@
   </div>
 
   <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, class: "edit-profile-form" }) do |f| %>
-    <%= f.error_notification %>
+    <%= f.error_notification %> <!-- Affiche toutes les erreurs globales -->
 
     <!-- ✅ SECTION 1: Infos Générales, Contact Info, Break the Ice -->
     <div class="form-section form-grid">
@@ -13,10 +13,18 @@
         <h3>General information</h3>
         <div class="form-group">
           <%= f.input :first_name, required: true, label: "First name", input_html: { class: "form-control", placeholder: "First name" } %>
+          <%= f.object.errors[:first_name].any? ? f.object.errors[:first_name].join(', ') : '' %> <!-- Affiche l'erreur pour first_name -->
+
           <%= f.input :last_name, required: true, label: "Last name", input_html: { class: "form-control", placeholder: "Last name" } %>
+          <%= f.object.errors[:last_name].any? ? f.object.errors[:last_name].join(', ') : '' %> <!-- Affiche l'erreur pour last_name -->
+
+          <%= f.input :date_of_birth, as: :string, required: false, label: "Date of Birth", input_html: { class: "form-control", type: "date", placeholder: "dd/mm/yyyy" } %>
+          <%= f.object.errors[:date_of_birth].any? ? f.object.errors[:date_of_birth].join(', ') : '' %> <!-- Affiche l'erreur pour date_of_birth -->
+
           <div class="form-avatar">
             <label><strong>Update your profile picture</strong></label>
             <%= f.file_field :avatar, class: "form-control-file" %>
+            <%= f.object.errors[:avatar].any? ? f.object.errors[:avatar].join(', ') : '' %> <!-- Affiche l'erreur pour avatar -->
           </div>
         </div>
       </div>
@@ -25,16 +33,27 @@
         <h3>Contact information</h3>
         <div class="form-group">
           <%= f.input :email, required: true, label: "Email", input_html: { class: "form-control", autocomplete: "email", placeholder: "Primary email" } %>
+          <%= f.object.errors[:email].any? ? f.object.errors[:email].join(', ') : '' %> <!-- Affiche l'erreur pour email -->
+
           <%= f.input :secondary_email, required: false, label: "Secondary email", input_html: { class: "form-control", autocomplete: "email", placeholder: "Secondary email (optional)" } %>
+          <%= f.object.errors[:secondary_email].any? ? f.object.errors[:secondary_email].join(', ') : '' %> <!-- Affiche l'erreur pour secondary_email -->
+
           <%= f.input :phone_number, required: false, label: "Phone number", input_html: { class: "form-control", placeholder: "Phone number (optional)" } %>
+          <%= f.object.errors[:phone_number].any? ? f.object.errors[:phone_number].join(', ') : '' %> <!-- Affiche l'erreur pour phone_number -->
         </div>
       </div>
 
       <div class="form-column break-the-ice">
         <h3>Break the ice</h3>
         <div class="form-group">
+          <%= f.input :profession, required: false, label: "Profession", input_html: { class: "form-control", placeholder: "Your profession" } %>
+          <%= f.object.errors[:profession].any? ? f.object.errors[:profession].join(', ') : '' %> <!-- Affiche l'erreur pour profession -->
+
           <%= f.input :bio, as: :text, required: false, label: "Bio", input_html: { class: "form-control", placeholder: "Tell us about yourself (optional)" } %>
+          <%= f.object.errors[:bio].any? ? f.object.errors[:bio].join(', ') : '' %> <!-- Affiche l'erreur pour bio -->
+
           <%= f.input :hobbies, as: :text, required: false, label: "Hobbies", input_html: { class: "form-control", placeholder: "Your hobbies (optional)" } %>
+          <%= f.object.errors[:hobbies].any? ? f.object.errors[:hobbies].join(', ') : '' %> <!-- Affiche l'erreur pour hobbies -->
         </div>
       </div>
     </div>
@@ -45,23 +64,38 @@
       <div class="social-grid">
         <div class="form-column">
           <%= f.input :linkedin, required: false, label: "LinkedIn", input_html: { class: "form-control", placeholder: "LinkedIn profile" } %>
+          <%= f.object.errors[:linkedin].any? ? f.object.errors[:linkedin].join(', ') : '' %> <!-- Affiche l'erreur pour linkedin -->
+
           <%= f.input :github, required: false, label: "GitHub", input_html: { class: "form-control", placeholder: "GitHub profile" } %>
+          <%= f.object.errors[:github].any? ? f.object.errors[:github].join(', ') : '' %> <!-- Affiche l'erreur pour github -->
         </div>
         <div class="form-column">
           <%= f.input :facebook, required: false, label: "Facebook", input_html: { class: "form-control", placeholder: "Facebook profile" } %>
+          <%= f.object.errors[:facebook].any? ? f.object.errors[:facebook].join(', ') : '' %> <!-- Affiche l'erreur pour facebook -->
+
           <%= f.input :instagram, required: false, label: "Instagram", input_html: { class: "form-control", placeholder: "Instagram profile" } %>
+          <%= f.object.errors[:instagram].any? ? f.object.errors[:instagram].join(', ') : '' %> <!-- Affiche l'erreur pour instagram -->
         </div>
         <div class="form-column">
           <%= f.input :twitter, required: false, label: "Twitter", input_html: { class: "form-control", placeholder: "Twitter profile" } %>
+          <%= f.object.errors[:twitter].any? ? f.object.errors[:twitter].join(', ') : '' %> <!-- Affiche l'erreur pour twitter -->
+
           <%= f.input :tiktok, required: false, label: "TikTok", input_html: { class: "form-control", placeholder: "TikTok profile" } %>
+          <%= f.object.errors[:tiktok].any? ? f.object.errors[:tiktok].join(', ') : '' %> <!-- Affiche l'erreur pour tiktok -->
         </div>
       </div>
+    </div>
+
+    <!-- ✅ SECTION: Current Password -->
+    <div class="form-group current-password">
+      <%= f.input :current_password, required: true, label: "Current password", input_html: { class: "form-control", placeholder: "Enter your current password to confirm the changes" } %>
+      <%= f.object.errors[:current_password].any? ? f.object.errors[:current_password].join(', ') : '' %> <!-- Affiche l'erreur pour current_password -->
     </div>
 
     <!-- ✅ Actions : Update profile et Change password côte à côte -->
     <div class="form-actions">
       <%= f.button :submit, "Update profile", class: "btn btn-primary action-btn" %>
-      <%= link_to "Change password", edit_user_password_path, class: "btn btn-yellow action-btn" %>
+      <%= link_to "Change password", edit_password_path, class: "btn btn-yellow action-btn" %>
     </div>
   <% end %>
 

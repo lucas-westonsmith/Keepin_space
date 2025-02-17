@@ -130,6 +130,8 @@
 
     label {
       font-weight: bold;
+      text-align: left;  /* Enlève tout centrage global */
+      margin-bottom: 0.5rem;
     }
   }
 
@@ -164,9 +166,9 @@
   .delete-account-text {
     text-align: center;
     font-size: 1rem;
-    color: #666; /* ✅ Même couleur que le texte d’introduction */
+    color: #666;
     margin-top: 2rem;
-    margin-bottom: 0.5rem; /* ✅ Espacement ajusté */
+    margin-bottom: 0.5rem;
   }
 
   .delete-account {
@@ -192,6 +194,23 @@
       background-color: #E0A800;
       transform: translateY(-2px);
     }
+  }
+
+  /* Correction spécifique pour le champ current-password */
+  .form-group.current-password {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .form-group.current-password label {
+    font-weight: bold;     /* S'assure que le label est en gras */
+    text-align: left;      /* Aligne le label à gauche */
+    margin-bottom: 0.5rem; /* Espacement sous le label */
+  }
+
+  .form-group.current-password input {
+    margin-top: 0.25rem; /* Pour aligner l'input avec le label */
   }
 }
 
@@ -439,6 +458,32 @@
     padding: 0.75rem 1.5rem;
     border-radius: 8px;
     font-size: 1rem;
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    background-color: #0056D2;
+    color: #fff;
+    font-weight: bold;
+    border: none;
+
+    &:hover {
+      background-color: #0041a8;
+    }
+  }
+
+  .btn-secondary {
+    background-color: #888;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    display: inline-block;
+
+    &:hover {
+      background-color: #666;
+      text-decoration: none;
+    }
   }
 
   .change-password-footer {
@@ -446,12 +491,17 @@
     font-size: 0.9rem;
 
     a {
-      color: #0056D2;
+      color: #fff;
       font-weight: bold;
+      background-color: #787878;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      display: inline-block;
       text-decoration: none;
 
       &:hover {
-        text-decoration: underline;
+        background-color: #787878;
+        text-decoration: none;
       }
     }
   }

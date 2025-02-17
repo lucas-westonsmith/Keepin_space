@@ -3,10 +3,9 @@
   margin: 3rem auto;
   background: #fff;
   padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 
-  /* ✅ Event Header */
   .event-header {
     text-align: center;
     margin-bottom: 2rem;
@@ -14,7 +13,14 @@
     h1 {
       font-size: 2rem;
       font-weight: bold;
-      color: #0056D2;
+      color: #2A62D3; /* Légère variation de bleu */
+    }
+
+    .event-organizer {
+      font-size: 1.2rem;
+      color: #333;
+      font-weight: bold;
+      margin-top: 0.5rem;
     }
 
     .event-date,
@@ -32,24 +38,30 @@
     }
   }
 
-  /* ✅ Event Actions */
   .event-actions {
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem; /* Espacement entre les boutons */
     margin-bottom: 2rem;
 
     .btn {
       font-size: 1rem;
       padding: 0.75rem 1.5rem;
-      border-radius: 8px;
+      border-radius: 30px; /* Coins arrondis plus importants */
+      font-weight: bold;
       transition: all 0.3s ease-in-out;
+      text-align: center;
+      display: inline-block;
+      border: none;
 
       &.btn-primary {
-        background-color: #0056D2;
+        background-color: #2A62D3;
         color: white;
 
         &:hover {
-          background-color: #0041A3;
-          transform: translateY(-2px);
+          background-color: #1F4F99; /* Couleur un peu plus sombre pour le hover */
+          transform: translateY(-4px);
         }
       }
 
@@ -59,63 +71,201 @@
 
         &:hover {
           background-color: #D9534F;
+          transform: translateY(-4px);
+        }
+      }
+
+      &.btn-success {
+        background-color: #28a745;
+        color: white;
+
+        &:hover {
+          background-color: #218838;
+          transform: translateY(-4px);
+        }
+      }
+
+      &.btn-warning {
+        background-color: #f0ad4e;
+        color: white;
+
+        &:hover {
+          background-color: #ec971f;
+          transform: translateY(-4px);
+        }
+      }
+
+      &.btn-secondary {
+        background-color: #6c757d;
+        color: white;
+
+        &:hover {
+          background-color: #5a6268;
+          transform: translateY(-4px);
+        }
+      }
+    }
+
+    .dropdown {
+      position: relative;
+
+      .dropdown-menu {
+        display: flex;
+        flex-direction: column; /* Assurer que les éléments sont alignés verticalement */
+        align-items: stretch; /* S'assurer que tous les éléments occupent toute la largeur disponible */
+        display: none; /* Cacher la liste déroulante par défaut */
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 0;
+        list-style: none;
+        z-index: 10;
+
+        li {
+          padding: 0.5rem 1rem;
+          color: #333;
+          cursor: pointer;
+          text-align: left; /* Aligner le texte à gauche dans chaque élément */
+
+          &:hover {
+            background-color: #f0f0f0;
+          }
+        }
+      }
+
+      &:hover .dropdown-menu {
+        display: block; /* Afficher la liste déroulante au hover */
+      }
+    }
+  }
+
+  .event-invite {
+    text-align: center;
+    margin-bottom: 2rem;
+
+    .form-row {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+      width: 48%;
+    }
+
+    .invite-btn-container {
+      text-align: center; /* Centrage du bouton */
+      width: 100%;
+    }
+
+    .email-item, .phone-item {
+      display: flex;
+      background-color: #e0f7fa;
+      color: #00796b;
+      padding: 5px 10px;
+      margin: 5px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      position: relative;
+      max-width: calc(100% - 20px); /* Utilisation de max-width pour ne pas occuper toute la largeur */
+      width: auto;
+      flex-wrap: nowrap;
+      align-items: center;
+    }
+
+    .remove-email, .remove-phone {
+      position: absolute;
+      top: 0;
+      right: 0;
+      font-size: 1.2rem;
+      color: #ff3d00;
+      cursor: pointer;
+      padding: 0 5px;
+      z-index: 10; /* Assurer que la croix soit au-dessus */
+    }
+
+    .email-field, .phone-field {
+      display: inline-block;
+      width: calc(100% - 120px); /* Ajustement de la largeur pour le champ + la croix rouge */
+      padding: 5px;
+    }
+
+    .help-text {
+      font-size: 0.9rem;
+      color: #555;
+      margin-top: 5px;
+    }
+
+    .btn-secondary {
+      margin-top: 10px;
+    }
+  }
+
+  .event-notes {
+    h2 {
+      font-size: 1.5rem;
+      color: #2A62D3;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+
+      .form-control {
+        padding: 0.75rem;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.2s ease-in-out;
+
+        &:focus {
+          border-color: #0056D2;
+          box-shadow: 0 0 5px rgba(0, 86, 210, 0.3);
+          outline: none;
+        }
+      }
+    }
+
+    .form-actions {
+      text-align: right;
+      margin-top: 1rem;
+
+      .btn-secondary {
+        background-color: #007AFF;
+        color: white;
+        padding: 0.6rem 1.2rem;
+        border-radius: 8px;
+        font-weight: bold;
+        transition: all 0.3s ease-in-out;
+        border: none;
+        cursor: pointer;
+
+        &:hover {
+          background-color: #0056D2;
           transform: translateY(-2px);
         }
       }
     }
   }
 
-  /* ✅ Invite Guests */
-  .event-invite {
-    text-align: center;
-    margin-bottom: 2rem;
-
-    h2 {
-      font-size: 1.5rem;
-      color: #0056D2;
-      margin-bottom: 1rem;
-    }
-
-    .invite-form {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-
-      .form-group {
-        margin-bottom: 1rem;
-        width: 100%;
-
-        label {
-          font-size: 1rem;
-          font-weight: bold;
-          color: #333;
-        }
-
-        .form-control {
-          width: 100%;
-          padding: 0.75rem;
-          border: 1px solid #ccc;
-          border-radius: 8px;
-          font-size: 1rem;
-          transition: all 0.2s ease-in-out;
-
-          &:focus {
-            border-color: #0056D2;
-            box-shadow: 0 0 5px rgba(0, 86, 210, 0.3);
-            outline: none;
-          }
-        }
-      }
-    }
-  }
-
-  /* ✅ Guest List */
   .event-guests {
     h3 {
       font-size: 1.5rem;
-      color: #0056D2;
+      color: #2A62D3;
       margin-bottom: 1rem;
       text-align: center;
+    }
+
+    p.event-stats {
+      text-align: center; /* Centrer les statistiques */
+      font-size: 1rem;
+      color: #333;
+      margin-bottom: 1rem;
     }
 
     ul {
@@ -125,19 +275,30 @@
       .guest-item {
         background: #f9fafb;
         padding: 1rem;
-        border-radius: 8px;
+        border-radius: 12px;
         margin-bottom: 0.5rem;
         display: flex;
         justify-content: space-between;
         align-items: center;
 
-        .guest-email {
+        .guest-info {
+          flex-grow: 1; /* Permettre au nom d'occuper tout l'espace disponible */
+        }
+
+        .guest-actions {
+          display: flex;
+          align-items: center;
+          gap: 1rem; /* Espacement entre le statut et le bouton Remove */
+        }
+
+        .guest-name {
           font-weight: bold;
         }
 
         .guest-status {
           color: #007AFF;
           font-weight: bold;
+          white-space: nowrap; /* Empêcher un retour à la ligne */
         }
 
         .btn-sm {
@@ -155,45 +316,29 @@
         }
       }
     }
+
+    .guest-link {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .clickable {
+      cursor: pointer;
+      transition: background 0.2s ease-in-out;
+    }
+
+    .clickable:hover {
+      background: #eef5ff;
+    }
   }
 
-  /* ✅ Footer */
   .event-footer {
     text-align: center;
     margin-top: 2rem;
-
-    .btn-secondary {
-      background-color: #ccc;
-      color: black;
-      font-size: 1rem;
-      padding: 0.75rem 1.5rem;
-      border-radius: 8px;
-      transition: all 0.3s ease-in-out;
-
-      &:hover {
-        background-color: #bbb;
-        transform: translateY(-2px);
-      }
-    }
   }
 
-  /* ✅ Responsive */
-  @media (max-width: 768px) {
-    .event-header {
-      h1 {
-        font-size: 1.75rem;
-      }
-      .event-date,
-      .event-location,
-      .event-sub-location,
-      .event-description {
-        font-size: 1.1rem;
-      }
-    }
-
-    .event-guests ul .guest-item {
-      flex-direction: column;
-      text-align: center;
-    }
+  .font-bold {
+    font-weight: bold;
   }
 }

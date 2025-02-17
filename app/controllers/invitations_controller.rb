@@ -3,30 +3,42 @@ class InvitationsController < ApplicationController
   before_action :set_event
   before_action :set_invitation, only: [:update, :destroy, :respond]
 
-  # Create an invitation
+  # Create invitations for multiple emails and phones
   def create
-    @invitation = @event.invitations.build(invitation_params)
+    emails = params[:invitation][:email] || []  # Récupère les emails (peut être vide)
+    phones = params[:invitation][:phone] || []  # Récupère les téléphones (peut être vide)
 
-    # Check if the invited email belongs to an existing user
-    existing_user = User.find_by(email: @invitation.email)
-    @invitation.user = existing_user if existing_user
+    # Pour chaque email et téléphone, crée une invitation
+    emails.each_with_index do |email, index|
+      @invitation = @event.invitations.build(email: email, phone: phones[index])
 
-    if @invitation.save
-      send_invitation_email(@invitation) if @invitation.email.present?
+      # Vérifier si l'email correspond à un utilisateur existant
+      existing_user = User.find_by(email: @invitation.email)
+      @invitation.user = existing_user if existing_user
 
-      # Create notification for invited user
-      if @invitation.user
-        Notification.create!(
-          user: @invitation.user,
-          event: @event,
-          message: "You have been invited to #{@event.title}!"
-        )
+      if @invitation.save
+        # Envoyer l'invitation par email si un email est présent
+        send_invitation_email(@invitation) if @invitation.email.present?
+
+        # Envoyer l'invitation par SMS si un numéro de téléphone est présent
+        send_invitation_sms(@invitation) if @invitation.phone.present?
+
+        # Créer une notification pour l'utilisateur invité (si enregistré)
+        if @invitation.user
+          Notification.create!(
+            user: @invitation.user,
+            event: @event,
+            message: "You have been invited to #{@event.title}!"
+          )
+        end
+      else
+        # Si une invitation échoue, ajoute un message d'erreur et arrête la création
+        flash[:alert] = "Failed to send invitation for #{email || phones[index]}"
+        break
       end
-
-      redirect_to @event, notice: "Invitation sent successfully!"
-    else
-      redirect_to @event, alert: "Failed to send invitation."
     end
+
+    redirect_to @event, notice: "Invitations sent successfully!"
   end
 
   # Update invitation status (Accept/Decline)
@@ -75,10 +87,16 @@ class InvitationsController < ApplicationController
   end
 
   def invitation_params
-    params.require(:invitation).permit(:email, :phone_number, :status)
+    params.require(:invitation).permit(:email, :phone, :status)
   end
 
   def send_invitation_email(invitation)
     InvitationMailer.invite(invitation).deliver_later
+  end
+
+  def send_invitation_sms(invitation)
+    # Utilise Twilio ou un autre service pour envoyer un SMS
+    # Exemple:
+    # TwilioClient.send_sms(invitation.phone, "You have been invited to #{@event.title}.")
   end
 end

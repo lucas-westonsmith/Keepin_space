@@ -1,0 +1,27 @@
+<div class="contacts-container" data-controller="contacts">
+  <h1>Your Contacts</h1>
+
+  <ul id="contacts">
+    <% @contacts.each do |contact| %>
+      <li class="contact-item"
+          id="contact-<%= contact.id %>"
+          data-contacts-target="contact"
+          data-contacts-url="<%= profile_path(contact) %>"
+          data-action="click->contacts#redirect">
+
+        <div class="contact-avatar">
+          <%= image_tag contact.avatar.attached? ? url_for(contact.avatar) : asset_path("default-avatar.png"), alt: "#{contact.first_name} #{contact.last_name}" %>
+        </div>
+
+        <div class="contact-info">
+          <h3><%= contact.first_name %> <%= contact.last_name %></h3>
+          <div class="contact-details">
+            <p><strong>Profession:</strong> <%= contact.profession %></p>
+            <p><strong>Email:</strong> <%= contact.email %></p>
+            <p><strong>Phone:</strong> <%= contact.phone_number %></p>
+          </div>
+        </div>
+      </li>
+    <% end %>
+  </ul>
+</div>

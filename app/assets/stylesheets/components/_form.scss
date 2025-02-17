@@ -20,6 +20,21 @@
   .form-footer {
     text-align: center;
     margin-top: 2rem;
+
+    .btn-secondary {
+      color: #fff;
+      font-weight: bold;
+      background-color: #787878;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      display: inline-block;
+      text-decoration: none;
+
+      &:hover {
+        background-color: #787878;
+        text-decoration: none;
+      }
+    }
   }
 }
 

@@ -78,18 +78,22 @@
       flex: 1;
       cursor: pointer;
 
-      h3 {
-        font-size: 1.5rem;
-        font-weight: bold;
-        margin-bottom: 0.3rem; /* 🔥 Réduction de l’espace sous le titre */
+      .event-header {
+        display: flex;
+        justify-content: space-between; /* Positionne le titre à gauche et le statut à droite */
+        align-items: center; /* Aligne le titre et le statut verticalement */
+        width: 100%;
 
-        a {
-          text-decoration: none !important; /* 🔥 Supprime le soulignement des liens */
-          color: #0056D2;
+        h3 {
+          font-size: 1.5rem;
+          font-weight: bold;
+          margin-bottom: 0.3rem; /* 🔥 Réduction de l’espace sous le titre */
+        }
 
-          &:hover {
-            color: #FFC107;
-          }
+        .status {
+          font-size: 1rem;
+          font-weight: bold;
+          color: #000; /* Statut bleu */
         }
       }
 
@@ -154,6 +158,79 @@
 
       .event-actions {
         margin-top: 0.8rem;
+      }
+    }
+  }
+
+  .filters-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+    form {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    label {
+      font-weight: bold;
+      color: #333;
+    }
+
+    .filter-select, .filter-input {
+      padding: 0.5rem;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .filter-input {
+      width: 250px;
+    }
+
+    .btn-filter {
+      background-color: #0056D2;
+      color: white;
+      padding: 0.6rem 1rem;
+      border-radius: 5px;
+      transition: all 0.3s ease-in-out;
+
+      &:hover {
+        background-color: #003F91;
+      }
+    }
+
+    .btn-reset {
+      background-color: #FFC107;
+      color: black;
+      padding: 0.6rem 1rem;
+      border-radius: 5px;
+      text-decoration: none;
+      transition: all 0.3s ease-in-out;
+
+      &:hover {
+        background-color: #FFA000;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .filters-container {
+      flex-direction: column;
+      align-items: center;
+
+      form {
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .filter-select, .filter-input {
+        width: 100%;
       }
     }
   }
