@@ -34,9 +34,35 @@
         color: #0056D2;
       }
 
+      .profile-profession {
+        font-size: 1.25rem;
+        color: #333;
+        margin-bottom: 0.5rem;
+      }
+
       .profile-bio {
         font-size: 1rem;
         color: #666;
+        margin-bottom: 1rem;
+      }
+
+      .profile-birthdate {
+        font-size: 1rem;
+        color: #555;
+        margin-bottom: 1rem;
+      }
+
+      .profile-stats {
+        font-size: 1rem;
+        color: #333;
+
+        p {
+          margin: 0.5rem 0;
+        }
+
+        strong {
+          font-weight: bold;
+        }
       }
     }
   }
@@ -44,7 +70,7 @@
   /* ✅ Actions (bouton Edit) */
   .profile-actions {
     text-align: center;
-    margin-top: 1rem;
+    margin-top: 2rem; /* Déplacement vers le bas de la card */
 
     .btn-primary {
       background-color: #0056D2;
@@ -97,7 +123,6 @@
 
   /* ✅ Section des notes */
   .profile-notes {
-    margin-top: 2rem;
 
     h2 {
       font-size: 1.5rem;
@@ -141,6 +166,40 @@
         &:hover {
           background-color: #0056D2;
           transform: translateY(-2px);
+        }
+      }
+    }
+  }
+
+  /* ✅ Section des informations de contact et réseaux sociaux */
+  .profile-contact-info {
+
+    h3 {
+      font-size: 1.5rem; /* Augmentation de la taille de titre */
+      color: #0056D2;
+      margin-bottom: 1rem;
+    }
+
+    .social-links {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      gap: 1.5rem;
+      justify-content: flex-start;
+
+      li {
+        margin: 0;
+
+        .social-icon {
+          color: rgba(0, 0, 0, 0.85);
+          transition: color 0.3s ease-in-out, transform 0.3s ease-in-out;
+          font-size: 3rem;
+          transform: translateY(0);
+
+          &:hover {
+            color: #FFC107;
+            transform: translateY(-4px);
+          }
         }
       }
     }

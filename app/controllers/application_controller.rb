@@ -2,7 +2,6 @@ class ApplicationController < ActionController::Base
   before_action :authenticate_user!
   before_action :set_user_data
   before_action :configure_permitted_parameters, if: :devise_controller?
-  before_action :debug_devise_redirect
 
   private
 
@@ -20,16 +19,11 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def debug_devise_redirect
-    Rails.logger.info "🔍 Current user: #{current_user.inspect}"
-    Rails.logger.info "🔍 Requested path: #{request.fullpath}"
-  end
-
   protected
 
   # Autoriser les nouveaux champs pour Devise
   def configure_permitted_parameters
-    added_attrs = [:first_name, :last_name, :phone_number, :bio, :hobbies, :avatar,
+    added_attrs = [:first_name, :last_name, :date_of_birth, :phone_number, :profession, :bio, :hobbies, :avatar,
                    :secondary_email, :linkedin, :facebook, :instagram,
                    :twitter, :tiktok, :github]
     devise_parameter_sanitizer.permit(:sign_up, keys: added_attrs)

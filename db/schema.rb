@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_02_13_140616) do
+ActiveRecord::Schema[7.1].define(version: 2025_02_17_170205) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -73,6 +73,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_13_140616) do
     t.integer "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "phone"
+    t.string "token"
     t.index ["event_id"], name: "index_invitations_on_event_id"
     t.index ["user_id"], name: "index_invitations_on_user_id"
   end
@@ -83,7 +85,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_13_140616) do
     t.text "content"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "event_id"
     t.index ["author_id"], name: "index_notes_on_author_id"
+    t.index ["event_id"], name: "index_notes_on_event_id"
     t.index ["target_id"], name: "index_notes_on_target_id"
   end
 
@@ -120,6 +124,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_13_140616) do
     t.string "twitter"
     t.string "tiktok"
     t.string "github"
+    t.date "date_of_birth"
+    t.string "profession"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
@@ -131,6 +137,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_13_140616) do
   add_foreign_key "events", "users"
   add_foreign_key "invitations", "events"
   add_foreign_key "invitations", "users"
+  add_foreign_key "notes", "events"
   add_foreign_key "notes", "users", column: "author_id"
   add_foreign_key "notes", "users", column: "target_id"
   add_foreign_key "notifications", "events"

@@ -10,15 +10,24 @@
     </div>
     <div class="profile-info">
       <h1><%= @user.first_name %> <%= @user.last_name %></h1>
+      <p class="profile-profession"><%= @user.profession.presence || "No profession available." %></p>
       <p class="profile-bio"><%= @user.bio.presence || "No bio available." %></p>
+
+      <%# Affichage des hobbies si disponible %>
+      <% if @user.hobbies.present? %>
+        <p><strong>Hobbies:</strong> <%= @user.hobbies %></p>
+      <% end %>
+
+      <%# Affichage de la date de naissance avec un emoji de gâteau %>
+      <% if @user.date_of_birth.present? %>
+        <p class="profile-birthdate">🎂 <%= @user.date_of_birth.strftime("%B %d") %></p>
+      <% end %>
     </div>
   </div>
 
   <!-- ✅ Si c'est notre propre profil -->
   <% if @own_profile %>
-    <div class="profile-actions">
-      <%= link_to "Edit Profile", edit_user_registration_path, class: "btn btn-primary" %>
-    </div>
+    <!-- Ici, vous pouvez ajouter des sections pour le profil propre si nécessaire -->
   <% else %>
     <!-- ✅ Derniers événements en commun -->
     <div class="profile-common-events">
@@ -47,4 +56,59 @@
       <% end %>
     </div>
   <% end %>
+
+  <!-- ✅ Contact information -->
+  <div class="profile-contact-info">
+    <h3>Contact Information</h3>
+    <p><strong>Email:</strong> <%= @user.email %></p>
+    <% if @user.secondary_email.present? %>
+      <p><strong>Secondary Email:</strong> <%= @user.secondary_email %></p>
+    <% end %>
+    <% if @user.phone_number.present? %>
+      <p><strong>Phone:</strong> <%= @user.phone_number %></p>
+    <% end %>
+  </div>
+
+  <!-- ✅ Contact information et Social links -->
+  <div class="profile-contact-info">
+    <% if @user.linkedin.present? || @user.github.present? || @user.facebook.present? || @user.instagram.present? || @user.twitter.present? || @user.tiktok.present? %>
+    <h3>Social Media Links</h3>
+    <ul class="social-links">
+      <% if @user.linkedin.present? %>
+        <li><%= link_to "<i class='fab fa-linkedin'></i>".html_safe, @user.linkedin, target: "_blank", class: "social-icon" %></li>
+      <% end %>
+      <% if @user.github.present? %>
+        <li><%= link_to "<i class='fab fa-github'></i>".html_safe, @user.github, target: "_blank", class: "social-icon" %></li>
+      <% end %>
+      <% if @user.facebook.present? %>
+        <li><%= link_to "<i class='fab fa-facebook'></i>".html_safe, @user.facebook, target: "_blank", class: "social-icon" %></li>
+      <% end %>
+      <% if @user.instagram.present? %>
+        <li><%= link_to "<i class='fab fa-instagram'></i>".html_safe, @user.instagram, target: "_blank", class: "social-icon" %></li>
+      <% end %>
+      <% if @user.twitter.present? %>
+        <li><%= link_to "<i class='fab fa-twitter'></i>".html_safe, @user.twitter, target: "_blank", class: "social-icon" %></li>
+      <% end %>
+      <% if @user.tiktok.present? %>
+        <li><%= link_to "<i class='fab fa-tiktok'></i>".html_safe, @user.tiktok, target: "_blank", class: "social-icon" %></li>
+      <% end %>
+    </ul>
+  </div>
+  <% end %>
+
+  <!-- ✅ Le bouton "Edit Profile" tout en bas de la card -->
+  <% if @own_profile %>
+    <div class="profile-actions">
+      <%= link_to "Edit Profile", edit_user_registration_path, class: "btn btn-primary" %>
+    </div>
+  <% end %>
+
+  <% unless @own_profile %>
+    <% if @is_contact %>
+      <button class="btn btn-secondary" disabled>Contact added</button>
+    <% else %>
+      <%= link_to "Add to Contacts", add_contact_profile_path(@user), method: :post, data: { turbo_method: :post }, class: "btn btn-primary" %>
+    <% end %>
+  <% end %>
+
 </div>

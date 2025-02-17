@@ -1,0 +1,82 @@
+<div class="events-index">
+  <div class="events-header">
+    <h1>My Events</h1>
+    <%= link_to "Create an Event", new_event_path, class: "btn btn-primary" %>
+  </div>
+
+  <div class="filters-container">
+    <form method="get" action="<%= request.path %>">
+      <!-- Recherche -->
+      <label for="search-filter">Search:</label>
+      <input type="text" name="search" id="search-filter" class="filter-input" value="<%= params[:search] %>" placeholder="Title, description, location...">
+
+      <!-- Filtre par Mois -->
+      <label for="month-filter">Month:</label>
+      <select name="month" id="month-filter" class="filter-select">
+        <option value="">All Months</option>
+        <%
+          # Trier les mois en ordre chronologique en créant des objets Date
+          months = @joined_events.map { |e| e.date.beginning_of_month }.uniq.sort
+          months.each do |month|
+            month_str = month.strftime("%B %Y")
+        %>
+          <option value="<%= month_str %>" <%= "selected" if params[:month] == month_str %>><%= month_str %></option>
+        <% end %>
+      </select>
+
+      <!-- Filtre par Statut -->
+      <label for="status-filter">Status:</label>
+      <select name="status" id="status-filter" class="filter-select">
+        <option value="">All Status</option>
+        <option value="accepted" <%= "selected" if params[:status] == "accepted" %>>Accepted</option>
+        <option value="maybe" <%= "selected" if params[:status] == "maybe" %>>Maybe</option>
+        <option value="pending" <%= "selected" if params[:status] == "pending" %>>Pending</option>
+        <option value="declined" <%= "selected" if params[:status] == "declined" %>>Declined</option>
+        <option value="none" <%= "selected" if params[:status] == "none" %>>No Status</option>
+      </select>
+
+      <!-- Bouton de filtre -->
+      <button type="submit" class="btn btn-filter">Filter</button>
+
+      <!-- Bouton pour réinitialiser les filtres -->
+      <%= link_to "Reset", user_events_path, class: "btn btn-reset" %>
+    </form>
+  </div>
+
+  <%
+    # Trier les événements par mois et année
+    @joined_events.group_by { |event| event.date.beginning_of_month }.sort_by { |month, _| month }.each do |month, events|
+    month_str = month.strftime("%B %Y")
+  %>
+    <div class="month-divider">
+      <h2><%= month_str %></h2>
+    </div>
+
+    <div class="events-list">
+      <% events.each do |event| %>
+        <%= link_to event_path(event), class: "event-card" do %>
+          <div class="event-info">
+            <div class="event-header">
+              <h3 style="<%= 'color: #FFC008;' if event.user == current_user %>"><%= event.title %></h3>
+              <span class="status">
+                <%= event.user_status(current_user) %> <!-- Affiche l'emoji + statut -->
+              </span>
+            </div>
+            <p class="event-organizer">Organized by: <strong><%= event.organizer_name %></strong></p>
+            <p class="event-date-location">
+              📅 <%= event.date.strftime("%A, %B %d, %Y at %I:%M %p") %>
+              &nbsp;|&nbsp; 📍 <%= event.location %>
+            </p>
+            <p class="event-stats">
+              📋 <%= event.invitations.count %> Total Invited
+              &nbsp;|&nbsp; 👥 <%= event.attendees_count %> Attending
+              &nbsp;|&nbsp; 🤝 <%= event.contacts_attending_count(current_user) %> Your contacts attending
+              &nbsp;|&nbsp; 🔄 <%= event.people_you_ever_met_count(current_user) %> People you ever met
+            </p>
+            <p class="event-description"><%= truncate(event.description, length: 150) %></p>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+</div>

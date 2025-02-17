@@ -1,14 +1,28 @@
-<h1>Vos Notifications</h1>
+<div class="notifications-container" data-controller="notifications">
+  <h1>Your Notifications</h1>
 
-<ul id="notifications">
-  <% @notifications.each do |notification| %>
-    <li>
-      <%= notification.message %>
-      <% unless notification.read_at %>
-        <%= link_to "Marquer comme lu", notification_path(notification), method: :patch, class: "btn btn-success btn-sm" %>
-      <% end %>
-    </li>
-  <% end %>
-</ul>
+  <ul id="notifications">
+    <% @notifications.each do |notification| %>
+      <li class="notification-item <%= 'unread' unless notification.read_at %>"
+          id="notification-<%= notification.id %>"
+          data-notifications-target="notification"
+          data-notifications-url="<%= notification.event_url %>"
+          data-action="click->notifications#redirect">
+        <span class="notification-message"><%= notification.message %></span>
 
-<%= link_to "Retour aux événements", events_path, class: "btn btn-secondary" %>
+        <% unless notification.read_at %>
+          <button data-action="click->notifications#markAsRead"
+                  data-notifications-id-param="<%= notification.id %>"
+                  class="mark-as-read-btn">
+            Mark as read
+          </button>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+
+  <!-- Nouveau conteneur pour centrer le bouton -->
+  <div class="btn-container">
+    <%= link_to "Back to my events", user_events_path, class: "btn btn-secondary" %>
+  </div>
+</div>

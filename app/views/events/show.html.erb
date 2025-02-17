@@ -1,6 +1,8 @@
 <div class="event-show-container">
   <div class="event-header">
     <h1><%= @event.title %></h1>
+    <p class="event-organizer"><strong>Organized by:</strong> <%= @event.user.first_name %> <%= @event.user.last_name %></p>
+
     <p class="event-date">
       <strong>📅 Date:</strong>
       <% if @event.date.present? %>
@@ -10,59 +12,385 @@
       <% end %>
 
       <% if @event.end_date.present? %>
-        - <%= @event.end_date.strftime("%I:%M %p") %>
+        <% if @event.date.to_date == @event.end_date.to_date %>
+          - <%= @event.end_date.strftime("%I:%M %p") %>
+        <% else %>
+          <br><strong>🕛 Ends on:</strong> <%= @event.end_date.strftime("%B %d, %Y at %I:%M %p") %>
+        <% end %>
       <% end %>
     </p>
+
     <p class="event-location"><strong>📍 Location:</strong> <%= @event.location %></p>
+
     <% if @event.sub_location.present? %>
       <p class="event-sub-location"><strong>🏢 Sub-location:</strong> <%= @event.sub_location %></p>
     <% end %>
+
     <p class="event-description"><%= @event.description %></p>
   </div>
 
-  <!-- ✅ Boutons d'action (Rejoindre / Quitter) -->
+  <!-- ✅ Boutons d'action -->
   <div class="event-actions">
     <% if user_signed_in? %>
-      <% if @event.invitations.exists?(user_id: current_user.id, status: "accepted") %>
-        <%= link_to "Leave Event", leave_event_path(@event), method: :post, data: { turbo_method: :post }, class: "btn btn-danger" %>
+      <% if current_user == @event.user %>
+        <%= link_to "Edit Event", edit_event_path(@event), class: "btn btn-primary font-bold" %>
       <% else %>
-        <%= link_to "Join Event", join_event_path(@event), method: :post, data: { turbo_method: :post }, class: "btn btn-primary" %>
+        <% if @event.invitations.exists?(user_id: current_user.id, status: "accepted") %>
+          <div class="dropdown">
+            <%= link_to "Decline Event", decline_event_path(@event), method: :post, data: { turbo_method: :post }, class: "btn btn-danger" %>
+            <ul class="dropdown-menu">
+              <li><%= link_to "Accept", join_event_path(@event), method: :post, data: { turbo_method: :post }, class: "dropdown-item" %></li>
+              <li><%= link_to "Maybe", maybe_event_path(@event), method: :post, data: { turbo_method: :post }, class: "dropdown-item" %></li>
+              <li><%= link_to "Remain Pending", pending_event_path(@event), method: :post, data: { turbo_method: :post }, class: "dropdown-item" %></li>
+              <li><%= link_to "Decline", decline_event_path(@event), method: :post, data: { turbo_method: :post }, class: "dropdown-item" %></li>
+              <li><%= link_to "Remove Event", remove_event_path(@event), method: :delete, data: { turbo_method: :delete }, class: "dropdown-item" %></li>
+            </ul>
+          </div>
+        <% else %>
+          <div class="dropdown">
+            <%= link_to "Join Event", join_event_path(@event), method: :post, data: { turbo_method: :post }, class: "btn btn-primary font-bold" %>
+            <ul class="dropdown-menu">
+              <li><%= link_to "Accept", join_event_path(@event), method: :post, data: { turbo_method: :post }, class: "dropdown-item" %></li>
+              <li><%= link_to "Maybe", maybe_event_path(@event), method: :post, data: { turbo_method: :post }, class: "dropdown-item" %></li>
+              <li><%= link_to "Remain Pending", pending_event_path(@event), method: :post, data: { turbo_method: :post }, class: "dropdown-item" %></li>
+              <li><%= link_to "Decline", decline_event_path(@event), method: :post, data: { turbo_method: :post }, class: "dropdown-item" %></li>
+              <li><%= link_to "Remove Event", remove_event_path(@event), method: :delete, data: { turbo_method: :delete }, class: "dropdown-item" %></li>
+            </ul>
+          </div>
+        <% end %>
       <% end %>
     <% end %>
+
+    <!-- Ajouter l'événement aux agendas -->
+    <div class="event-calendar-actions">
+      <!-- Google Calendar -->
+      <% if @event.date.present? && @event.end_date.present? %>
+        <%= link_to "Add to Google Calendar", "https://www.google.com/calendar/render?action=TEMPLATE&text=#{CGI.escape(@event.title + ' by ' + @event.user.first_name + ' ' + @event.user.last_name)}&dates=#{@event.date.strftime("%Y%m%dT%H%M%S")}/#{@event.end_date.strftime("%Y%m%dT%H%M%S")}&details=#{CGI.escape(@event.description + ' Event URL: ' + event_invitation_url(@event))}&location=#{CGI.escape(@event.location)}&sf=true&output=xml", target: "_blank", class: "btn btn-success" %>
+      <% else %>
+        <span class="text-muted">Event date or end date is missing</span>
+      <% end %>
+
+      <!-- iCalendar / Apple Calendar / Outlook -->
+      <%= link_to "Add to Calendar (iCal) - Apple, Outlook, Android", download_ics_event_path(@event), class: "btn btn-warning" %>
+    </div>
   </div>
 
   <!-- ✅ Invitation des invités -->
   <% if user_signed_in? && current_user == @event.user %>
     <div class="event-invite">
       <h2>Invite Guests</h2>
-      <%= form_with model: [@event, Invitation.new], local: true, html: { class: "invite-form" } do |form| %>
-        <div class="form-group">
-          <%= form.label :email, "Guest Email" %>
-          <%= form.email_field :email, class: "form-control", required: true %>
+      <%= form_with model: [@event, Invitation.new], local: true, html: { class: "invite-form", id: "invitation-form" } do |form| %>
+        <div class="form-row">
+          <div class="form-group col">
+            <%= form.label :email, "Guest Email (optional)" %>
+            <div id="email-fields-container">
+              <%= form.email_field :email, class: "form-control email-field", name: "invitation[email][]", placeholder: "Enter email" %>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" id="add-email-btn">Add another email (or press Tab)</button>
+          </div>
+
+          <div class="form-group col">
+            <%= form.label :phone, "Guest Phone (optional)" %>
+            <div id="phone-fields-container">
+              <%= form.text_field :phone, class: "form-control phone-field", name: "invitation[phone][]", placeholder: "Enter phone" %>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" id="add-phone-btn">Add another phone (or press Tab)</button>
+          </div>
         </div>
-        <%= form.submit "Send Invitation", class: "btn btn-primary" %>
+        <div class="form-group invite-btn-container">
+          <%= form.submit "Send Invitation", class: "btn btn-primary btn-sm" %>
+        </div>
       <% end %>
+
+      <h3>Share Invitation Link</h3>
+      <p>Send this link to invite guests:</p>
+      <input type="text" value="<%= event_invitation_url(@event) %>" readonly class="form-control">
+      <button onclick="copyToClipboard()" class="btn btn-secondary btn-sm">Copy</button>
     </div>
   <% end %>
 
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // Gestion des emails
+      const addEmailButton = document.getElementById('add-email-btn');
+      const emailFieldsContainer = document.getElementById('email-fields-container');
+      const emailField = document.querySelector(".email-field");
+
+      // Liste des emails ajoutés
+      let addedEmails = [];
+
+      // Ajouter un email au clic
+      addEmailButton.addEventListener('click', function() {
+        let email = emailField.value.trim();
+
+        if (email && !addedEmails.includes(email)) {
+          addedEmails.push(email);
+
+          // Créer un conteneur pour l'email
+          const emailItem = document.createElement('div');
+          emailItem.classList.add('email-item');
+
+          // Afficher l'email et la croix
+          const emailText = document.createElement('span');
+          emailText.textContent = email;
+          emailItem.appendChild(emailText);
+
+          const removeButton = document.createElement('span');
+          removeButton.textContent = '✖';
+          removeButton.classList.add('remove-email');
+          emailItem.appendChild(removeButton);
+
+          emailFieldsContainer.appendChild(emailItem);
+
+          // Réinitialiser le champ email
+          emailField.value = '';
+
+          // Event pour supprimer un email
+          removeButton.addEventListener('click', function() {
+            emailItem.remove();
+            addedEmails = addedEmails.filter(e => e !== email);
+          });
+        } else {
+          alert("Please enter a valid email address.");
+        }
+      });
+
+      // Ajouter email avec la touche TAB
+      emailField.addEventListener('keydown', function(event) {
+        if (event.key === 'Tab') {
+          event.preventDefault(); // empêcher le changement de focus
+
+          let email = emailField.value.trim();
+
+          if (email && !addedEmails.includes(email)) {
+            addedEmails.push(email);
+
+            // Créer un conteneur pour l'email
+            const emailItem = document.createElement('div');
+            emailItem.classList.add('email-item');
+
+            // Afficher l'email et la croix
+            const emailText = document.createElement('span');
+            emailText.textContent = email;
+            emailItem.appendChild(emailText);
+
+            const removeButton = document.createElement('span');
+            removeButton.textContent = '✖';
+            removeButton.classList.add('remove-email');
+            emailItem.appendChild(removeButton);
+
+            emailFieldsContainer.appendChild(emailItem);
+
+            // Réinitialiser le champ d'email
+            emailField.value = '';
+
+            // Event pour supprimer un email
+            removeButton.addEventListener('click', function() {
+              emailItem.remove();
+              addedEmails = addedEmails.filter(e => e !== email);
+            });
+          } else {
+            alert("Please enter a valid email address.");
+          }
+        }
+      });
+
+      // Gestion des numéros de téléphone
+      const addPhoneButton = document.getElementById('add-phone-btn');
+      const phoneFieldsContainer = document.getElementById('phone-fields-container');
+      const phoneField = document.querySelector(".phone-field");
+
+      // Liste des numéros de téléphone ajoutés
+      let addedPhones = [];
+
+      // Ajouter un numéro de téléphone au clic
+      addPhoneButton.addEventListener('click', function() {
+        let phone = phoneField.value.trim();
+
+        if (phone && !addedPhones.includes(phone)) {
+          addedPhones.push(phone);
+
+          // Créer un conteneur pour le téléphone
+          const phoneItem = document.createElement('div');
+          phoneItem.classList.add('phone-item');
+
+          // Afficher le téléphone et la croix
+          const phoneText = document.createElement('span');
+          phoneText.textContent = phone;
+          phoneItem.appendChild(phoneText);
+
+          const removeButton = document.createElement('span');
+          removeButton.textContent = '✖';
+          removeButton.classList.add('remove-phone');
+          phoneItem.appendChild(removeButton);
+
+          phoneFieldsContainer.appendChild(phoneItem);
+
+          // Réinitialiser le champ téléphone
+          phoneField.value = '';
+
+          // Event pour supprimer un téléphone
+          removeButton.addEventListener('click', function() {
+            phoneItem.remove();
+            addedPhones = addedPhones.filter(p => p !== phone);
+          });
+        } else {
+          alert("Please enter a valid phone number.");
+        }
+      });
+
+      // Ajouter téléphone avec la touche TAB
+      phoneField.addEventListener('keydown', function(event) {
+        if (event.key === 'Tab') {
+          event.preventDefault(); // empêcher le changement de focus
+
+          let phone = phoneField.value.trim();
+
+          if (phone && !addedPhones.includes(phone)) {
+            addedPhones.push(phone);
+
+            // Créer un conteneur pour le téléphone
+            const phoneItem = document.createElement('div');
+            phoneItem.classList.add('phone-item');
+
+            // Afficher le téléphone et la croix
+            const phoneText = document.createElement('span');
+            phoneText.textContent = phone;
+            phoneItem.appendChild(phoneText);
+
+            const removeButton = document.createElement('span');
+            removeButton.textContent = '✖';
+            removeButton.classList.add('remove-phone');
+            phoneItem.appendChild(removeButton);
+
+            phoneFieldsContainer.appendChild(phoneItem);
+
+            // Réinitialiser le champ de téléphone
+            phoneField.value = '';
+
+            // Event pour supprimer un téléphone
+            removeButton.addEventListener('click', function() {
+              phoneItem.remove();
+              addedPhones = addedPhones.filter(p => p !== phone);
+            });
+          } else {
+            alert("Please enter a valid phone number.");
+          }
+        }
+      });
+
+      // Avant l'envoi du formulaire, ajouter les emails et téléphones dynamiquement
+      document.getElementById("invitation-form").addEventListener("submit", function(event) {
+        // Empêcher la soumission initiale pour ajouter les emails et téléphones dynamiquement
+        event.preventDefault();
+
+        // Récupérer l'email du champ d'entrée si non vide
+        let inputEmail = emailField.value.trim();
+        if (inputEmail && !addedEmails.includes(inputEmail)) {
+          addedEmails.push(inputEmail);
+        }
+
+        // Vider le tableau des emails existants
+        let emailInputs = document.querySelectorAll("input[name='invitation[email][]']");
+        emailInputs.forEach(input => input.remove());
+
+        // Ajouter chaque email de `addedEmails` dans un champ caché
+        addedEmails.forEach(function(email) {
+          let emailInput = document.createElement('input');
+          emailInput.type = 'hidden';  // champ caché
+          emailInput.name = 'invitation[email][]';
+          emailInput.value = email;
+          document.getElementById("invitation-form").appendChild(emailInput);
+        });
+
+        // Récupérer le téléphone du champ d'entrée si non vide
+        let inputPhone = phoneField.value.trim();
+        if (inputPhone && !addedPhones.includes(inputPhone)) {
+          addedPhones.push(inputPhone);
+        }
+
+        // Vider le tableau des numéros de téléphone existants
+        let phoneInputs = document.querySelectorAll("input[name='invitation[phone][]']");
+        phoneInputs.forEach(input => input.remove());
+
+        // Ajouter chaque téléphone de `addedPhones` dans un champ caché
+        addedPhones.forEach(function(phone) {
+          let phoneInput = document.createElement('input');
+          phoneInput.type = 'hidden';  // champ caché
+          phoneInput.name = 'invitation[phone][]';
+          phoneInput.value = phone;
+          document.getElementById("invitation-form").appendChild(phoneInput);
+        });
+
+        // Soumettre le formulaire après l'ajout des emails et téléphones
+        document.getElementById("invitation-form").submit();
+      });
+    });
+  </script>
+
+  <!-- ✅ Private Notes -->
+  <div class="event-notes">
+    <h2>Your Private Notes</h2>
+    <%= form_with model: @note, url: event_notes_path(@event), method: :post, local: true do |form| %>
+      <div class="form-group">
+        <%= form.text_area :content, placeholder: "Write a private note about this event...", class: "form-control" %>
+      </div>
+      <div class="form-actions">
+        <%= form.submit "Save Note", class: "btn btn-secondary" %>
+      </div>
+    <% end %>
+  </div>
+
   <!-- ✅ Liste des invités -->
   <div class="event-guests">
-    <h3>Invited Guests</h3>
+    <h3>List of Guests</h3>
+
+    <!-- Statistiques -->
+    <p class="event-stats">
+      📜 <%= @event.invitations.count %> Total Invited
+      &nbsp;|&nbsp; 👥 <%= @event.attendees_count %> Attending
+    </p>
+    <p class="event-stats">
+      🤝 <%= @event.contacts_attending_count(current_user) %> Your contacts attending
+      &nbsp;|&nbsp; 🔄 <%= @event.people_you_ever_met_count(current_user) %> People you ever met
+    </p>
+
     <ul>
-      <% @event.invitations.each do |invitation| %>
-        <li class="guest-item">
-          <span class="guest-email"><%= invitation.email || invitation.user&.email %></span> -
-          <span class="guest-status"><%= invitation.status&.humanize || "Pending" %></span>
-          <% if current_user == @event.user %>
-            <%= link_to "Remove", event_invitation_path(@event, invitation), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger btn-sm" %>
-          <% end %>
-        </li>
+      <!-- Organisateur toujours en premier -->
+      <li class="guest-item">
+        <span class="guest-name">⭐ <%= @event.user.first_name %> <%= @event.user.last_name %> (Organizer)</span>
+      </li>
+
+      <% @sorted_invitations.each do |invitation| %>
+        <% unless invitation.user == @event.user %>
+          <li class="guest-item">
+            <div class="guest-info">
+              <% if invitation.user.present? %>
+                <!-- ✅ Utilisateur avec compte -->
+                <%= link_to profile_path(invitation.user), class: "guest-link" do %>
+                  <span class="guest-name">🟢 <%= invitation.user.first_name %> <%= invitation.user.last_name %></span>
+                <% end %>
+              <% else %>
+                <!-- ❌ Utilisateur sans compte -->
+                <span class="guest-name">🔵 <%= invitation.email || invitation.phone_number %></span>
+              <% end %>
+            </div>
+
+            <div class="guest-actions">
+              <span class="guest-status"><%= invitation.status&.humanize || "Pending" %></span>
+              <% if current_user == @event.user %>
+                <%= link_to "Remove", event_invitation_path(@event, invitation), method: :delete, data: { turbo_method: :delete, confirm: "Are you sure?" }, class: "btn btn-danger btn-sm" %>
+              <% end %>
+            </div>
+          </li>
+        <% end %>
       <% end %>
     </ul>
   </div>
 
-  <!-- ✅ Retour à la liste des événements -->
+
+  <!-- ✅ Retour à la liste des événements (centré) -->
   <div class="event-footer">
-    <%= link_to "Back to Events", events_path, class: "btn btn-secondary" %>
+    <%= link_to "Back to Events", events_path, class: "btn btn-secondary center-btn font-bold" %>
   </div>
 </div>
