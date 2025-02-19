@@ -6,7 +6,8 @@ class Invitation < ApplicationRecord
 
   enum status: { pending: 0, accepted: 1, declined: 2, maybe: 3 }, _default: "pending"
 
-  validates :email, presence: true, unless: -> { user.present? }
+  validates :email, presence: true, unless: -> { phone.present? || user.present? }
+  validates :phone, presence: true, unless: -> { email.present? || user.present? }
   validates :phone, uniqueness: { scope: :event_id }, allow_blank: true
 
   private

@@ -82,6 +82,20 @@
       <%= form_with model: [@event, Invitation.new], local: true, html: { class: "invite-form", id: "invitation-form" } do |form| %>
         <div class="form-row">
           <div class="form-group col">
+            <%= form.label :contacts, "Invite Contacts" %>
+            <div id="contacts-container">
+              <% if @contacts.present? %>
+                <input type="text" id="contact-search" class="form-control" placeholder="Start typing to find contacts">
+                <div id="contacts-results" class="dropdown-menu"></div>
+              <% else %>
+                <p>No contacts available.</p>
+              <% end %>
+            </div>
+            <%= form.hidden_field :contact_id, id: "selected-contact-id" %>
+            <button type="button" class="btn btn-secondary btn-sm" id="add-contact-btn">Add Contact (or press Tab)</button>
+          </div>
+
+          <div class="form-group col">
             <%= form.label :email, "Guest Email (optional)" %>
             <div id="email-fields-container">
               <%= form.email_field :email, class: "form-control email-field", name: "invitation[email][]", placeholder: "Enter email" %>
@@ -108,6 +122,188 @@
       <button onclick="copyToClipboard()" class="btn btn-secondary btn-sm">Copy</button>
     </div>
   <% end %>
+
+<!-- Section pour le mur -->
+<div class="event-wall">
+  <h2>Event Wall</h2>
+  <% if @event.can_post_on_wall || current_user == @event.user %>
+    <%= form_with model: @new_post, url: create_post_event_path(@event), local: true do |form| %>
+      <div class="form-group">
+        <%= form.text_area :content, class: "form-control", placeholder: "Write something..." %>
+      </div>
+      <div class="form-group">
+        <%= form.file_field :image, class: "form-control" %>
+      </div>
+      <div class="form-actions">
+        <%= form.submit "Post", class: "btn btn-primary" %>
+      </div>
+    <% end %>
+  <% end %>
+
+  <div class="posts">
+    <% @posts.each do |post| %>
+      <div class="post">
+        <p>
+          <strong><%= post.user.first_name %> <%= post.user.last_name %></strong>
+          <span class="post-timestamp">
+            - <%= post.created_at.strftime("%d %b %H:%M") %>
+          </span>
+        </p>
+        <p><%= post.content %></p>
+        <% if post.image && post.image.attached? %>
+          <%= image_tag post.image, class: "img-fluid" %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<div class="event-polls">
+  <h2>Polls</h2>
+  <% if current_user == @event.user %>
+    <%= form_with model: @new_poll, url: create_poll_event_path(@event), local: true do |form| %>
+      <div class="form-group">
+        <%= form.text_field :question, class: "form-control", placeholder: "Poll question" %>
+      </div>
+
+      <!-- Section pour les options de sondage -->
+      <div id="poll-options">
+        <!-- Afficher une option si elle existe déjà -->
+        <% @new_poll.poll_options.each_with_index do |option, index| %>
+          <div class="form-group">
+            <%= form.text_field "poll_options[#{index}][content]", value: option.content, class: "form-control", placeholder: "Option content" %>
+          </div>
+        <% end %>
+
+        <!-- Si aucune option n'existe, afficher un champ vide -->
+        <% if @new_poll.poll_options.empty? %>
+          <div class="form-group">
+            <%= form.text_field "poll_options[0][content]", class: "form-control", placeholder: "Option content" %>
+          </div>
+        <% end %>
+      </div>
+
+      <!-- Ajouter un autre champ d'option -->
+      <div class="form-group">
+        <%= form.text_field "poll_options[#{@new_poll.poll_options.size}][content]", class: "form-control", placeholder: "Another Option content" %>
+      </div>
+
+      <div class="form-actions">
+        <%= form.submit "Create Poll", class: "btn btn-primary" %>
+      </div>
+    <% end %>
+  <% end %>
+
+  <!-- Liste des sondages déjà existants -->
+  <div class="polls">
+    <% @polls.each do |poll| %>
+      <div class="poll">
+        <h3><%= poll.question %></h3>
+        <% poll.poll_options.each do |option| %>
+          <p><%= option.content %>: <%= option.votes_count %> votes</p>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+  <!-- ✅ Private Notes -->
+  <div class="event-notes">
+    <h2>Your Private Notes</h2>
+    <%= form_with model: @note, url: event_notes_path(@event), method: :post, local: true do |form| %>
+      <div class="form-group">
+        <%= form.text_area :content, placeholder: "Write a private note about this event...", class: "form-control" %>
+      </div>
+      <div class="form-actions">
+        <%= form.submit "Save Note", class: "btn btn-secondary" %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="event-guests">
+  <h3>List of Guests</h3>
+
+  <!-- Statistiques avec liens de filtre -->
+  <p class="event-stats">
+    📋
+    <%= link_to "#{@event.invitations.count} Total Invited", event_path(@event, filter: "all"), class: ("active-filter" if params[:filter].nil? || params[:filter] == "all") %>
+    &nbsp;|&nbsp; 👥
+    <%= link_to "#{@event.attendees_count} Attending", event_path(@event, filter: "attending"), class: ("active-filter" if params[:filter] == "attending") %>
+  </p>
+  <p class="event-stats">
+    🤝
+    <%= link_to "#{@event.contacts_attending_count(current_user)} Your contacts attending", event_path(@event, filter: "contacts_attending"), class: ("active-filter" if params[:filter] == "contacts_attending") %>
+    &nbsp;|&nbsp; 🔄
+    <%= link_to "#{@event.people_you_ever_met_count(current_user)} People you ever met", event_path(@event, filter: "people_you_ever_met"), class: ("active-filter" if params[:filter] == "people_you_ever_met") %>
+  </p>
+
+  <ul>
+    <!-- Afficher l'organisateur uniquement si le filtre ne l'exclut pas -->
+    <% unless params[:filter] == "contacts_attending" || params[:filter] == "not_attending" || params[:filter] == "people_you_ever_met" %>
+      <li class="guest-item">
+        <%= link_to profile_path(@event.user), class: "guest-link" do %>
+          <div class="guest-info">
+            <span class="guest-name">⭐ <%= @event.user.first_name %> <%= @event.user.last_name %> (Organizer)</span>
+          </div>
+        <% end %>
+      </li>
+    <% end %>
+
+    <% @sorted_invitations.each do |invitation| %>
+      <% unless invitation.user == @event.user %> <!-- Exclure l'organisateur ici aussi dans l'affichage -->
+        <% if params[:filter] == "people_you_ever_met" %>
+          <% past_event_ids = current_user.invitations.joins(:event)
+                                                 .where(status: "accepted")
+                                                 .where("events.date < ?", DateTime.now)
+                                                 .pluck(:event_id)
+
+             already_met_ids = Invitation.where(event_id: past_event_ids, status: "accepted")
+                                         .where.not(user_id: current_user.id)
+                                         .pluck(:user_id)
+                                         .uniq
+
+             if already_met_ids.include?(invitation.user_id) %> <!-- Seulement les invités déjà rencontrés -->
+          %>
+            <li class="guest-item">
+              <%= link_to (invitation.user.present? ? profile_path(invitation.user) : "#"), class: "guest-link" do %>
+                <div class="guest-info">
+                  <span class="guest-name"><%= invitation.user.present? ? "🟢 #{invitation.user.first_name} #{invitation.user.last_name}" : "🔵 #{invitation.email || invitation.phone_number}" %></span>
+                </div>
+                <div class="guest-actions">
+                  <span class="guest-status"><%= invitation.status&.humanize || "Pending" %></span>
+                  <% if current_user == @event.user %>
+                    <%= link_to "Remove", event_invitation_path(@event, invitation), method: :delete, data: { turbo_method: :delete, confirm: "Are you sure?" }, class: "btn btn-danger btn-sm" %>
+                  <% end %>
+                </div>
+              <% end %>
+            </li>
+          <% end %>
+        <% else %>
+          <!-- Affichage des invités pour les autres filtres -->
+          <li class="guest-item">
+            <%= link_to (invitation.user.present? ? profile_path(invitation.user) : "#"), class: "guest-link" do %>
+              <div class="guest-info">
+                <span class="guest-name"><%= invitation.user.present? ? "🟢 #{invitation.user.first_name} #{invitation.user.last_name}" : "🔵 #{invitation.email || invitation.phone_number}" %></span>
+              </div>
+              <div class="guest-actions">
+                <span class="guest-status"><%= invitation.status&.humanize || "Pending" %></span>
+                <% if current_user == @event.user %>
+                  <%= link_to "Remove", event_invitation_path(@event, invitation), method: :delete, data: { turbo_method: :delete, confirm: "Are you sure?" }, class: "btn btn-danger btn-sm" %>
+                <% end %>
+              </div>
+            <% end %>
+          </li>
+        <% end %>
+      <% end %>
+    <% end %>
+  </ul>
+</div>
+
+  <!-- ✅ Retour à la liste des événements (centré) -->
+  <div class="event-footer">
+    <%= link_to "Back to Events", events_path, class: "btn btn-secondary center-btn font-bold" %>
+  </div>
+</div>
 
   <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -326,71 +522,138 @@
         document.getElementById("invitation-form").submit();
       });
     });
+
+document.addEventListener("DOMContentLoaded", function() {
+  const searchInput = document.getElementById("contact-search");
+  const resultsContainer = document.getElementById("contacts-results");
+  const addContactButton = document.getElementById("add-contact-btn");
+  const contactsContainer = document.getElementById("contacts-container");
+
+  let selectedIndex = -1;
+  let results = [];
+  let addedContacts = new Set(); // Stocke les contacts déjà ajoutés
+
+  searchInput.addEventListener("input", function() {
+    const query = searchInput.value.trim();
+
+    if (query.length === 0) {
+      resetResults();
+      return;
+    }
+
+    fetch(`<%= url_for(action: "search_contacts") %>?query=${encodeURIComponent(query)}`)
+      .then(response => response.json())
+      .then(contacts => {
+        // Filtrer les contacts déjà ajoutés
+        results = contacts.filter(contact => !addedContacts.has(contact.id));
+        selectedIndex = -1; // Réinitialisation
+        renderResults();
+      });
+  });
+
+  searchInput.addEventListener("keydown", function(e) {
+    if (results.length === 0) return;
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      selectedIndex = (selectedIndex + 1) % results.length;
+      updateSelection();
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      selectedIndex = (selectedIndex - 1 + results.length) % results.length;
+      updateSelection();
+    } else if (e.key === "Enter" || e.key === "Tab") {
+      e.preventDefault();
+      if (selectedIndex >= 0) {
+        selectContact(results[selectedIndex]);
+      }
+    }
+  });
+
+  function renderResults() {
+    resultsContainer.innerHTML = "";
+    if (results.length > 0) {
+      resultsContainer.style.display = "block";
+      results.forEach((contact, index) => {
+        let item = document.createElement("div");
+        item.classList.add("dropdown-item");
+        item.textContent = contact.name;
+        item.dataset.id = contact.id;
+
+        item.addEventListener("click", function() {
+          selectContact(contact);
+        });
+
+        resultsContainer.appendChild(item);
+      });
+
+      updateSelection();
+    } else {
+      resultsContainer.style.display = "none";
+    }
+  }
+
+  function updateSelection() {
+    let items = resultsContainer.querySelectorAll(".dropdown-item");
+    items.forEach((item, index) => {
+      if (index === selectedIndex) {
+        item.classList.add("selected");
+        searchInput.value = item.textContent; // Met à jour le champ d'input
+      } else {
+        item.classList.remove("selected");
+      }
+    });
+  }
+
+  function selectContact(contact) {
+    searchInput.value = contact.name;
+    document.getElementById("selected-contact-id").value = contact.id;
+    addContactToContainer(contact);
+    addedContacts.add(contact.id); // Marquer comme ajouté
+    resetResults();
+  }
+
+  function resetResults() {
+    resultsContainer.innerHTML = "";
+    resultsContainer.style.display = "none";
+    selectedIndex = -1;
+  }
+
+  function addContactToContainer(contact) {
+    let contactItem = document.createElement("div");
+    contactItem.classList.add("email-item"); // Utilisation du même style que les emails
+
+    // Afficher le nom avec le style
+    const contactText = document.createElement("span");
+    contactText.textContent = contact.name;
+    contactItem.appendChild(contactText);
+
+    // Bouton supprimer (croix rouge)
+    let removeButton = document.createElement("span");
+    removeButton.textContent = "✖";
+    removeButton.classList.add("remove-email"); // Même classe que pour email/tel
+    removeButton.addEventListener("click", function() {
+      contactItem.remove();
+      addedContacts.delete(contact.id); // Supprimer du set pour qu'on puisse le réajouter
+    });
+
+    contactItem.appendChild(removeButton);
+    contactsContainer.appendChild(contactItem);
+
+    searchInput.value = ""; // Réinitialiser le champ
+  }
+
+  addContactButton.addEventListener("click", function() {
+    if (selectedIndex >= 0) {
+      selectContact(results[selectedIndex]);
+    }
+  });
+
+  // Fermer la liste si on clique en dehors
+  document.addEventListener("click", function(event) {
+    if (!searchInput.contains(event.target) && !resultsContainer.contains(event.target)) {
+      resetResults();
+    }
+  });
+});
   </script>
-
-  <!-- ✅ Private Notes -->
-  <div class="event-notes">
-    <h2>Your Private Notes</h2>
-    <%= form_with model: @note, url: event_notes_path(@event), method: :post, local: true do |form| %>
-      <div class="form-group">
-        <%= form.text_area :content, placeholder: "Write a private note about this event...", class: "form-control" %>
-      </div>
-      <div class="form-actions">
-        <%= form.submit "Save Note", class: "btn btn-secondary" %>
-      </div>
-    <% end %>
-  </div>
-
-  <!-- ✅ Liste des invités -->
-  <div class="event-guests">
-    <h3>List of Guests</h3>
-
-    <!-- Statistiques -->
-    <p class="event-stats">
-      📜 <%= @event.invitations.count %> Total Invited
-      &nbsp;|&nbsp; 👥 <%= @event.attendees_count %> Attending
-    </p>
-    <p class="event-stats">
-      🤝 <%= @event.contacts_attending_count(current_user) %> Your contacts attending
-      &nbsp;|&nbsp; 🔄 <%= @event.people_you_ever_met_count(current_user) %> People you ever met
-    </p>
-
-    <ul>
-      <!-- Organisateur toujours en premier -->
-      <li class="guest-item">
-        <span class="guest-name">⭐ <%= @event.user.first_name %> <%= @event.user.last_name %> (Organizer)</span>
-      </li>
-
-      <% @sorted_invitations.each do |invitation| %>
-        <% unless invitation.user == @event.user %>
-          <li class="guest-item">
-            <div class="guest-info">
-              <% if invitation.user.present? %>
-                <!-- ✅ Utilisateur avec compte -->
-                <%= link_to profile_path(invitation.user), class: "guest-link" do %>
-                  <span class="guest-name">🟢 <%= invitation.user.first_name %> <%= invitation.user.last_name %></span>
-                <% end %>
-              <% else %>
-                <!-- ❌ Utilisateur sans compte -->
-                <span class="guest-name">🔵 <%= invitation.email || invitation.phone_number %></span>
-              <% end %>
-            </div>
-
-            <div class="guest-actions">
-              <span class="guest-status"><%= invitation.status&.humanize || "Pending" %></span>
-              <% if current_user == @event.user %>
-                <%= link_to "Remove", event_invitation_path(@event, invitation), method: :delete, data: { turbo_method: :delete, confirm: "Are you sure?" }, class: "btn btn-danger btn-sm" %>
-              <% end %>
-            </div>
-          </li>
-        <% end %>
-      <% end %>
-    </ul>
-  </div>
-
-
-  <!-- ✅ Retour à la liste des événements (centré) -->
-  <div class="event-footer">
-    <%= link_to "Back to Events", events_path, class: "btn btn-secondary center-btn font-bold" %>
-  </div>
-</div>

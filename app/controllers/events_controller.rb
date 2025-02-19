@@ -1,12 +1,19 @@
 class EventsController < ApplicationController
   before_action :authenticate_user!, except: [:public_index, :show]
-  before_action :set_event, only: [:show, :edit, :update, :destroy, :join, :decline, :maybe, :pending, :remove, :save_note]
+  before_action :set_event, only: [:show, :edit, :update, :destroy, :join, :decline, :maybe, :pending, :remove, :save_note, :create_post, :create_poll]
   before_action :authorize_event, only: [:edit, :update, :destroy]
 
-  # Afficher tous les événements publics
   def public_index
     # Récupérer tous les événements publics triés par date croissante
     @events = Event.public_event.order(date: :asc)
+
+    # Inclure les événements passés seulement si la case "Show also past events" est cochée
+    if params[:show_past] == "true"
+      # Aucun filtrage, on garde tous les événements, passés et à venir
+    else
+      # Sinon, afficher uniquement les événements à venir
+      @events = @events.where("date >= ?", Date.today)
+    end
 
     # Filtrer par recherche (sur titre, description, lieu et organisateur)
     if params[:search].present?
@@ -30,8 +37,8 @@ class EventsController < ApplicationController
       when "none"
         # Corriger pour ne pas dupliquer les événements et ne montrer que ceux avec "No Status"
         @events = @events.left_outer_joins(:invitations)
-                        .where("invitations.user_id IS NULL OR invitations.status IS NULL OR invitations.user_id != ?", current_user.id)
-                        .group("events.id")
+                          .where("invitations.user_id IS NULL OR invitations.status IS NULL OR invitations.user_id != ?", current_user.id)
+                          .group("events.id")
       end
     end
   end
@@ -93,21 +100,102 @@ class EventsController < ApplicationController
         end
       end
     end
+
+    # Filtrer les événements passés si la case "Show Past" est cochée
+    if params[:show_past] == "true"
+      # Aucune restriction sur la date, on garde les événements passés et à venir
+    else
+      # Filtrer pour ne garder que les événements futurs
+      @joined_events = @joined_events.select { |event| event.date >= Date.today }
+    end
   end
 
   # Afficher un événement spécifique
   def show
+    filter = params[:filter] || "all" # Filtre par défaut : tout afficher
+
+    # Liste des invités avec un compte
     @guests_with_account = @event.invitations.includes(:user)
-                                 .where.not(user_id: nil)
-                                 .map(&:user)
-                                 .sort_by { |user| [(user.first_name || "").downcase, (user.last_name || "").downcase] }
+                                         .where.not(user_id: nil)
+                                         .map(&:user)
+                                         .sort_by { |user| [(user.first_name || "").downcase, (user.last_name || "").downcase] }
 
+    # Liste des invités sans compte
     @guests_without_account = @event.invitations.where(user_id: nil)
-                                 .sort_by { |inv| (inv.email || inv.phone_number.to_s).downcase }
+                                         .sort_by { |inv| (inv.email || inv.phone_number.to_s).downcase }
 
+    # Tri général des invitations
     @sorted_invitations = @event.invitations.includes(:user)
-                                .sort_by { |inv| [inv.user ? 0 : 1, (inv.user&.first_name || inv.email || "").downcase] }
+                                            .sort_by { |inv| [inv.user ? 0 : 1, (inv.user&.first_name || inv.email || "").downcase] }
+
+    # Appliquer le filtre
+    case filter
+    when "attending"
+      @sorted_invitations = @sorted_invitations.select { |inv| inv.status == 'accepted' }
+    when "contacts_attending"
+      # Appliquer un filtre sur les contacts uniquement, et exclure l'organisateur
+      @sorted_invitations = @sorted_invitations.select { |inv| inv.user && current_user.contacts.include?(inv.user) && inv.user != @event.user }
+    when "not_attending"
+      @sorted_invitations = @sorted_invitations.reject { |inv| inv.status == 'accepted' }
+    else
+      # "all" ou aucun filtre spécifié
+      @sorted_invitations = @sorted_invitations.reject { |inv| inv.user == @event.user } # Exclure l'organisateur ici également
+    end
+
     @note = current_user.notes_written.find_or_initialize_by(event_id: @event.id)
+    @contacts = current_user.contacts
+    @posts = @event.posts.order(created_at: :desc)
+    @polls = @event.polls
+    @new_post = Post.new
+    @new_poll = Poll.new
+  end
+
+  def create_post
+    @post = @event.posts.build(post_params)
+    @post.user = current_user
+    if @post.save
+      redirect_to @event, notice: 'Post created successfully!'
+    else
+      redirect_to @event, alert: 'Failed to create post.'
+    end
+  end
+
+  def create_poll
+    @new_poll = @event.polls.new(poll_params)
+
+    if @new_poll.save
+      # Création manuelle des options de sondage à partir des paramètres
+      poll_options_params.each do |option_params|
+        @new_poll.poll_options.create(option_params)
+      end
+
+      redirect_to @event, notice: "Poll created successfully!"
+    else
+      render :new
+    end
+  end
+
+  def search_contacts
+    query = params[:query].to_s.strip.downcase
+    return render json: [] if query.blank?
+
+    terms = query.split  # Découpe la recherche en plusieurs mots (ex: "Lucas S")
+
+    if terms.length > 1
+      # Si plusieurs termes sont tapés, chercher prénom et nom ensemble
+      contacts = current_user.contacts.where(
+        "LOWER(first_name) LIKE ? AND LOWER(last_name) LIKE ?",
+        "#{terms[0]}%", "#{terms[1]}%"
+      )
+    else
+      # Recherche normale sur prénom ou nom si un seul mot
+      contacts = current_user.contacts.where(
+        "LOWER(first_name) LIKE ? OR LOWER(last_name) LIKE ?",
+        "#{query}%", "#{query}%"
+      )
+    end
+
+    render json: contacts.map { |c| { id: c.id, name: "#{c.first_name} #{c.last_name}" } }
   end
 
   def save_note
@@ -271,4 +359,22 @@ end
   def event_params
     params.require(:event).permit(:title, :description, :date, :end_date, :location, :sub_location, :visibility)
   end
+
+  def post_params
+    params.require(:post).permit(:content, :image)
+  end
+
+  def poll_params
+    # Permet le paramètre `poll_options` comme un tableau d'objets
+    params.require(:poll).permit(:question, poll_options: [:content])
+  end
+
+  def poll_options_params
+    # Vérifie si `poll_options` existe, sinon retourne un tableau vide
+    return [] if params[:poll][:poll_options].nil?
+
+    # Permet de récupérer les options de sondage
+    params[:poll][:poll_options].map { |option| option.permit(:content) }
+  end
+
 end

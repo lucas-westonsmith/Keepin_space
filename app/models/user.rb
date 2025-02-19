@@ -9,6 +9,7 @@ class User < ApplicationRecord
   has_many :notes_written, class_name: "Note", foreign_key: "author_id", dependent: :destroy
   has_many :notes_received, class_name: "Note", foreign_key: "target_id", dependent: :destroy
   has_many :notifications, dependent: :destroy
+  has_many :posts, dependent: :destroy  # Ajoutez cette ligne pour les publications
 
   # ActiveStorage pour l'avatar
   has_one_attached :avatar

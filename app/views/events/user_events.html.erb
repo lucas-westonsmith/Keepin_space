@@ -4,44 +4,48 @@
     <%= link_to "Create an Event", new_event_path, class: "btn btn-primary" %>
   </div>
 
-  <div class="filters-container">
-    <form method="get" action="<%= request.path %>">
-      <!-- Recherche -->
-      <label for="search-filter">Search:</label>
-      <input type="text" name="search" id="search-filter" class="filter-input" value="<%= params[:search] %>" placeholder="Title, description, location...">
+ <div class="filters-container">
+  <form method="get" action="<%= request.path %>">
+    <!-- Recherche -->
+    <label for="search-filter">Search:</label>
+    <input type="text" name="search" id="search-filter" class="filter-input" value="<%= params[:search] %>" placeholder="Title, description, location...">
 
-      <!-- Filtre par Mois -->
-      <label for="month-filter">Month:</label>
-      <select name="month" id="month-filter" class="filter-select">
-        <option value="">All Months</option>
-        <%
-          # Trier les mois en ordre chronologique en créant des objets Date
-          months = @joined_events.map { |e| e.date.beginning_of_month }.uniq.sort
-          months.each do |month|
-            month_str = month.strftime("%B %Y")
-        %>
-          <option value="<%= month_str %>" <%= "selected" if params[:month] == month_str %>><%= month_str %></option>
-        <% end %>
-      </select>
+    <!-- Filtre par Mois -->
+    <label for="month-filter">Month:</label>
+    <select name="month" id="month-filter" class="filter-select">
+      <option value="">All Months</option>
+      <%
+        # Trier les mois en ordre chronologique en créant des objets Date
+        months = @joined_events.map { |e| e.date.beginning_of_month }.uniq.sort
+        months.each do |month|
+          month_str = month.strftime("%B %Y")
+      %>
+        <option value="<%= month_str %>" <%= "selected" if params[:month] == month_str %>><%= month_str %></option>
+      <% end %>
+    </select>
 
-      <!-- Filtre par Statut -->
-      <label for="status-filter">Status:</label>
-      <select name="status" id="status-filter" class="filter-select">
-        <option value="">All Status</option>
-        <option value="accepted" <%= "selected" if params[:status] == "accepted" %>>Accepted</option>
-        <option value="maybe" <%= "selected" if params[:status] == "maybe" %>>Maybe</option>
-        <option value="pending" <%= "selected" if params[:status] == "pending" %>>Pending</option>
-        <option value="declined" <%= "selected" if params[:status] == "declined" %>>Declined</option>
-        <option value="none" <%= "selected" if params[:status] == "none" %>>No Status</option>
-      </select>
+    <!-- Filtre par Statut -->
+    <label for="status-filter">Status:</label>
+    <select name="status" id="status-filter" class="filter-select">
+      <option value="">All Status</option>
+      <option value="accepted" <%= "selected" if params[:status] == "accepted" %>>Accepted</option>
+      <option value="maybe" <%= "selected" if params[:status] == "maybe" %>>Maybe</option>
+      <option value="pending" <%= "selected" if params[:status] == "pending" %>>Pending</option>
+      <option value="declined" <%= "selected" if params[:status] == "declined" %>>Declined</option>
+      <option value="none" <%= "selected" if params[:status] == "none" %>>No Status</option>
+    </select>
 
-      <!-- Bouton de filtre -->
-      <button type="submit" class="btn btn-filter">Filter</button>
+    <!-- Checkbox pour afficher aussi les événements passés -->
+    <label for="show-past-filter">Past events:</label>
+    <input type="checkbox" name="show_past" id="show-past-filter" <%= "checked" if params[:show_past] == "true" %> value="true">
 
-      <!-- Bouton pour réinitialiser les filtres -->
-      <%= link_to "Reset", user_events_path, class: "btn btn-reset" %>
-    </form>
-  </div>
+    <!-- Bouton de filtre -->
+    <button type="submit" class="btn btn-filter">Filter</button>
+
+    <!-- Bouton pour réinitialiser les filtres -->
+    <%= link_to "Reset", user_events_path, class: "btn btn-reset" %>
+  </form>
+</div>
 
   <%
     # Trier les événements par mois et année

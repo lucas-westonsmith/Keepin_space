@@ -37,6 +37,12 @@
     <%= form.select :visibility, Event.visibilities.keys.map { |v| [v.humanize, v] }, {}, class: "form-control" %>
   </div>
 
+  <!-- ✅ Alignement horizontal du champ can_post_on_wall -->
+  <div class="form-group-inline">
+    <%= form.label :can_post_on_wall, "Allow users to post on the event wall?", class: "checkbox-label" %>
+    <%= form.check_box :can_post_on_wall, {}, true, false %>
+  </div>
+
   <div class="form-actions">
     <%= form.submit "Save Event", class: "btn btn-primary" %>
   </div>

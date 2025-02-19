@@ -262,7 +262,7 @@
     }
 
     p.event-stats {
-      text-align: center; /* Centrer les statistiques */
+      text-align: center;
       font-size: 1rem;
       color: #333;
       margin-bottom: 1rem;
@@ -280,15 +280,21 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        transition: background-color 0.3s ease;
+        cursor: pointer;
+
+        &:hover {
+          background-color: #e0e7ff; /* Effet de survol */
+        }
 
         .guest-info {
-          flex-grow: 1; /* Permettre au nom d'occuper tout l'espace disponible */
+          flex-grow: 1;
         }
 
         .guest-actions {
           display: flex;
           align-items: center;
-          gap: 1rem; /* Espacement entre le statut et le bouton Remove */
+          gap: 1rem;
         }
 
         .guest-name {
@@ -298,7 +304,7 @@
         .guest-status {
           color: #007AFF;
           font-weight: bold;
-          white-space: nowrap; /* Empêcher un retour à la ligne */
+          white-space: nowrap;
         }
 
         .btn-sm {
@@ -320,7 +326,8 @@
     .guest-link {
       text-decoration: none;
       color: inherit;
-      display: block;
+      display: block; /* Toute la card devient un lien cliquable */
+      width: 100%; /* Assurez-vous que le lien occupe toute la largeur */
     }
 
     .clickable {
@@ -331,6 +338,28 @@
     .clickable:hover {
       background: #eef5ff;
     }
+
+    /* Style pour les liens de filtre */
+    .event-stats a {
+      text-decoration: none; /* Pas de soulignement */
+      color: #000; /* Texte noir */
+      font-weight: bold;
+      padding: 0.2rem 0.4rem;
+      border-radius: 6px;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+
+      &:hover {
+        background-color: #eef5ff; /* Effet de survol léger */
+      }
+    }
+
+    /* Style pour le lien actif */
+    .active-filter {
+      color: #000; /* Texte noir */
+      background-color: rgba(0, 123, 255, 0.1); /* Halo bleu transparent */
+      border-radius: 6px;
+      box-shadow: 0 0 8px rgba(0, 123, 255, 0.3); /* Halo bleu autour */
+    }
   }
 
   .event-footer {
@@ -340,5 +369,10 @@
 
   .font-bold {
     font-weight: bold;
+  }
+
+  .dropdown-item.selected {
+    background-color: #007bff;
+    color: white;
   }
 }

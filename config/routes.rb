@@ -1,23 +1,26 @@
 Rails.application.routes.draw do
-  get 'settings/show'
-  get 'settings/update'
-
   root to: "pages#home"
 
   devise_for :users
 
-  # Route pour afficher les événements publics
+  # Routes pour les événements
   get '/events/public', to: 'events#public_index', as: :public_events
-  # Route pour afficher les événements de l'utilisateur
   get '/events/user_events', to: 'events#user_events', as: :user_events
+
   resources :events do
     member do
       post "join"
       post "decline"
-      post "maybe"   # Ajouter cette route pour l'option "Maybe"
-      post "pending" # Ajouter cette route pour l'option "Pending"
-      post "remove"  # Ajouter cette route pour l'option "Remove"
+      post "maybe"
+      post "pending"
+      post "remove"
       get :download_ics
+      post :create_post  # Ajout pour créer un post
+      post :create_poll  # Ajout pour créer un sondage
+    end
+
+    collection do
+      get 'search_contacts'  # Accessible sans ID d'événement
     end
 
     resources :invitations, only: [:create, :update, :destroy] do
@@ -27,19 +30,27 @@ Rails.application.routes.draw do
     end
   end
 
+  # Routes pour les notifications et messages
   resources :notifications, only: [:index, :update]
   resources :messages, only: [:index, :show, :create]
-  resource :settings, only: [:show, :update]
 
-  resources :profiles, only: [:show] do
-    post 'add_contact', on: :member  # Cette ligne crée la route pour l'ajout de contact
+  # Routes pour les paramètres
+  resource :settings, only: [:show, :update] do
+    get "password", to: "settings#edit_password", as: :edit_password
+    patch "password", to: "settings#update_password"
   end
 
-  get "/discover", to: "pages#discover", as: :discover
-  get "/pricing", to: "pages#pricing", as: :pricing
+  # Routes pour les profils et contacts
+  resources :profiles, only: [:show] do
+    post 'add_contact', on: :member
+  end
   get 'contacts', to: 'profiles#index', as: 'contacts'
   post "/profiles/:id/notes", to: "profiles#save_note", as: :profile_notes
+
+  # Routes pour les notes sur les événements
   post "/events/:id/notes", to: "events#save_note", as: :event_notes
-  get "/settings/password", to: "settings#edit_password", as: :edit_password
-  patch "/settings/password", to: "settings#update_password"
+
+  # Pages statiques
+  get "/discover", to: "pages#discover", as: :discover
+  get "/pricing", to: "pages#pricing", as: :pricing
 end

@@ -86,6 +86,28 @@
     }
   }
 
+  /* ✅ Alignement horizontal pour le checkbox */
+  .form-group-inline {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 0.5rem; /* Espace entre le texte et la checkbox */
+    margin-top: 0.5rem;
+
+    .checkbox-label {
+      margin-bottom: 0; /* Supprime l'espace sous le label */
+      font-size: 1rem;
+      font-weight: bold;
+      color: #333;
+    }
+
+    input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+  }
+
   .form-actions {
     text-align: center;
     margin-top: 1rem;
@@ -122,5 +144,10 @@
 
   .form-control {
     font-size: 0.9rem;
+  }
+
+  .form-group-inline {
+    flex-direction: row; /* Toujours aligné en ligne même en mobile */
+    justify-content: space-between;
   }
 }

@@ -6,39 +6,46 @@
     <% end %>
   </div>
 
-  <div class="filters-container">
-    <form method="get" action="<%= request.path %>">
-      <!-- Recherche -->
-      <label for="search-filter">Search:</label>
-      <input type="text" name="search" id="search-filter" class="filter-input" value="<%= params[:search] %>" placeholder="Title, description, location...">
+<div class="filters-container">
+  <form method="get" action="<%= request.path %>">
+    <!-- Recherche -->
+    <label for="search-filter">Search:</label>
+    <input type="text" name="search" id="search-filter" class="filter-input" value="<%= params[:search] %>" placeholder="Title, description, location...">
 
-      <!-- Filtre par Mois -->
-      <label for="month-filter">Month:</label>
-      <select name="month" id="month-filter" class="filter-select">
-        <option value="">All Months</option>
-        <% @events.map { |e| e.date.strftime("%B %Y") }.uniq.each do |month| %>
-          <option value="<%= month %>" <%= "selected" if params[:month] == month %>><%= month %></option>
-        <% end %>
-      </select>
+    <!-- Filtre par Mois -->
+    <label for="month-filter">Month:</label>
+    <select name="month" id="month-filter" class="filter-select">
+      <option value="">All Months</option>
+      <% @events.map { |e| e.date.strftime("%B %Y") }.uniq.each do |month| %>
+        <option value="<%= month %>" <%= "selected" if params[:month] == month %>><%= month %></option>
+      <% end %>
+    </select>
 
-      <!-- Filtre par Statut -->
-      <label for="status-filter">Status:</label>
-      <select name="status" id="status-filter" class="filter-select">
-        <option value="">All Status</option>
-        <option value="accepted" <%= "selected" if params[:status] == "accepted" %>>Accepted</option>
-        <option value="maybe" <%= "selected" if params[:status] == "maybe" %>>Maybe</option>
-        <option value="pending" <%= "selected" if params[:status] == "pending" %>>Pending</option>
-        <option value="declined" <%= "selected" if params[:status] == "declined" %>>Declined</option>
-        <option value="none" <%= "selected" if params[:status] == "none" %>>No Status</option>
-      </select>
+    <!-- Filtre par Statut -->
+    <label for="status-filter">Status:</label>
+    <select name="status" id="status-filter" class="filter-select">
+      <option value="">All Status</option>
+      <option value="accepted" <%= "selected" if params[:status] == "accepted" %>>Accepted</option>
+      <option value="maybe" <%= "selected" if params[:status] == "maybe" %>>Maybe</option>
+      <option value="pending" <%= "selected" if params[:status] == "pending" %>>Pending</option>
+      <option value="declined" <%= "selected" if params[:status] == "declined" %>>Declined</option>
+      <option value="none" <%= "selected" if params[:status] == "none" %>>No Status</option>
+    </select>
 
-      <!-- Bouton de filtre -->
-      <button type="submit" class="btn btn-filter">Filter</button>
+    <!-- Champ caché pour que l'état de la case soit toujours passé -->
+    <%= hidden_field_tag :show_past, "false" %>
 
-      <!-- Bouton pour réinitialiser les filtres -->
-      <%= link_to "Reset", public_events_path, class: "btn btn-reset" %>
-    </form>
-  </div>
+    <!-- Checkbox pour afficher aussi les événements passés -->
+    <label for="show-past-filter">Past events:</label>
+    <input type="checkbox" name="show_past" id="show-past-filter" <%= "checked" if params[:show_past] == "true" %> value="true">
+
+    <!-- Bouton de filtre -->
+    <button type="submit" class="btn btn-filter">Filter</button>
+
+    <!-- Bouton pour réinitialiser les filtres -->
+    <%= link_to "Reset", public_events_path, class: "btn btn-reset" %>
+  </form>
+</div>
 
   <% @events.group_by { |event| event.date.strftime("%B %Y") }.each do |month, events| %>
     <div class="month-divider">
